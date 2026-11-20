@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Conversation notebook",
+    "description": "Choose Conversation notebook from the right sidebar guide to manually edit a separate note for each conversation. New notes start blank. Each edit writes synchronously in this browser on this device; Desktop uses the stable dsh-app://app origin to retain notes across restarts. Clearing browser data deletes notes. Tabs using the same note follow last-write-wins; another tab can overwrite text even while the editor is focused."
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "name": "dsh-token-usage",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "按对话和项目层级统计 token 消耗及时间趋势；无模型调用",
+  "main": "index.mjs",
+  "files": ["index.mjs", "collector.mjs", "client.js", "dashboard.html", "cordis.yml", "README.md", "AGENTS.md", "*.test.mjs"],
+  "exports": {
+    ".": "./index.mjs",
+    "./client": "./client.js",
+    "./package.json": "./package.json"
+  },
+  "dsh": {
+    "client": {
+      "platform": "web",
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-layout",
+        "@deepseek-ai/dsh-client-ui-sidebar"
+      ],
+      "external": [
+        "react"
+      ]
+    },
+    "bundle": {
+      "patch": "cordis.yml",
+      "platforms": [
+        "win32",
+        "linux",
+        "darwin"
+      ]
+    }
+  },
+  "scripts": {
+    "test": "node --test *.test.mjs"
+  }
+}
