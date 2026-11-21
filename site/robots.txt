@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# 插件索引（给 DSH「发现」页和爬虫读的机器可读文件）
+# https://kazuma-124.github.io/Personal_DSH_Plugins/index.json

@@ -63,6 +63,7 @@ node scripts/deploy.mjs   # 需要 DSH_PROFILE_DIR，DSH 会话的 shell 里已�
 - **GitHub 仓库的 About**：description 与 topics（`dsh-plugin`、`deepseek-harness`、`dsh`）——GitHub 搜索和社区目录都读它。
 - **[awesome-dsh-plugin](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin)**：条目草稿在 [`catalog/`](catalog/README.md)。这个目录同时喂给 dsh-market 插件、[dshmarket.com](https://dshmarket.com) 和 [awesome-dsh-plugin.com](https://awesome-dsh-plugin.com)，并发布成一份 format-1 索引，所以进目录 = 同时进市场、网站和别人「发现」页里的那个源。
 - **本仓库的插件索引**：`https://cdn.jsdelivr.net/gh/Kazuma-124/Personal_DSH_Plugins@main/site/index.json`，由 [`scripts/build-index.mjs`](scripts/build-index.mjs) 从包字段生成，DSH「发现」页可直接添加。
+- **落地页**：<https://kazuma-124.github.io/Personal_DSH_Plugins/>（GitHub Pages，给搜索引擎看的静态页）。同一目录也提供备用索引源 `https://kazuma-124.github.io/Personal_DSH_Plugins/index.json`，`github.io` 在部分网络下较慢，所以默认仍用 jsDelivr。
 - 页面正文（本 README 与两个插件 README）里的名词、安装命令、能力描述，是普通搜索引擎唯一能抓到的内容，改动时别把它们删掉。
 
 ## DSH 实际会校验什么
