@@ -112,6 +112,12 @@ function gitDirectoryTime(dir) {
 async function publishTimestamp(pkg, dir) {
   const override = argument('published-at', undefined);
   if (override !== undefined) return Number(override);
+  // A git source is published by the commit that carries it, so no registry is involved.
+  if (SOURCE === 'git') {
+    const committed = gitDirectoryTime(dir);
+    if (committed === undefined) fail(`${dir} has no commit time; commit the package first`);
+    return committed;
+  }
   const url = `https://registry.npmjs.org/${encodeURIComponent(pkg.name).replace(/%40/g, '@')}`;
   try {
     const response = await fetch(url, { signal: AbortSignal.timeout(15000), headers: { accept: 'application/json' } });

@@ -61,9 +61,12 @@
       "versions": [
         {
           "version": "1.0.0",
-          "publishTimestamp": 1795148237,
+          "publishTimestamp": 1795243640,
           "source": {
-            "type": "npm"
+            "type": "git",
+            "url": "https://github.com/Kazuma-124/Personal_DSH_Plugins",
+            "commit": "05119d812368eca3962311eecd7d2a3e4b25bf43",
+            "path": "dsh-token-usage"
           },
           "engines": {
             "dsh": ">=0.2.0-0 <0.3.0"
@@ -104,9 +107,12 @@
       "versions": [
         {
           "version": "1.0.0",
-          "publishTimestamp": 1795233407,
+          "publishTimestamp": 1795243640,
           "source": {
-            "type": "npm"
+            "type": "git",
+            "url": "https://github.com/Kazuma-124/Personal_DSH_Plugins",
+            "commit": "05119d812368eca3962311eecd7d2a3e4b25bf43",
+            "path": "conversation-notebook"
           },
           "engines": {
             "dsh": ">=0.2.0-0 <0.3.0"
