@@ -2,18 +2,20 @@
 
 [Kazuma-124](https://github.com/Kazuma-124) 的 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)（`dsh`）插件仓库：每个插件都是可独立安装的**组合包**（bundle），仓库同时发布一个 **DSH 插件索引**，方便在应用的「发现」页里浏览、安装和更新。
 
-**English.** Two installable DeepSeek Harness bundles — token usage statistics and a per-conversation notebook. Both are plain JavaScript, have no third-party runtime dependencies, never call a model and never upload data. Install them from the plugin index (`https://cdn.jsdelivr.net/gh/Kazuma-124/Personal_DSH_Plugins@main/site/index.json`) or with `dsh plugin add`. See [Install](#install) and [what DSH actually validates](#what-dsh-actually-validates).
+**English.** Two installable DeepSeek Harness bundles — token usage statistics and a per-conversation notebook. Both are plain JavaScript, have no third-party runtime dependencies, never call a model and never upload data. Not published to npm: clone the repo and install a directory, or add the plugin index (`https://cdn.jsdelivr.net/gh/Kazuma-124/Personal_DSH_Plugins@main/site/index.json`) in **Plugins → Discover**. See [Install](#install) and [what DSH actually validates](#what-dsh-actually-validates).
 
-| 插件 | 作用 | 出现位置 | npm 包 |
+| 插件 | 作用 | 出现位置 | 仓库目录 |
 |:--|:--|:--|:--|
-| [dsh-token-usage](dsh-token-usage/README.md) | 按对话与项目汇总 token 用量，带趋势图 | 左侧栏「Token 用量」 | `@kazuma-124/dsh-token-usage` |
-| [conversation-notebook](conversation-notebook/README.md) | 每个对话一份独立纯文本笔记，保存到本机磁盘 | 右侧栏入口页「对话记事本」 | `@kazuma-124/dsh-conversation-notebook` |
+| [dsh-token-usage](dsh-token-usage/README.md) | 按对话与项目汇总 token 用量，带趋势图 | 左侧栏「Token 用量」 | [`dsh-token-usage/`](dsh-token-usage) |
+| [conversation-notebook](conversation-notebook/README.md) | 每个对话一份独立纯文本笔记，保存到本机磁盘 | 右侧栏入口页「对话记事本」 | [`conversation-notebook/`](conversation-notebook) |
 
 两个插件都只在本机工作：不调用模型、不读对话正文、不上传任何数据、不创建定时任务。
 
 ## 安装
 
-### 方式一：插件索引（推荐，能在 DSH 里浏览和更新）
+目前**没有发布到 npm**，分发方式是「克隆仓库 + 按目录安装」，或通过插件索引安装（索引条目指向本仓库的固定 commit，需要本机有 `git`）。
+
+### 方式一：插件索引（在 DSH 里浏览、安装）
 
 1. 打开 **插件**，在**实验性插件**里开启**自定义插件索引**（DSH 默认不启用「发现」页，也不自带任何索引源）。
 2. 切到 **发现** → **添加索引源**，填入：
@@ -22,20 +24,31 @@
    https://cdn.jsdelivr.net/gh/Kazuma-124/Personal_DSH_Plugins@main/site/index.json
    ```
 
-3. 选中条目，确认来源后安装。
+3. 选中条目，确认来源后安装。安装过程会用 `git` 拉取索引里写的那个 commit（不是分支头），所以装到的东西是固定的。
 
 索引是第三方内容：DSH 校验文件格式，但标题、作者和来源由索引声明，安装前请在确认框里核对来源。
 
-### 方式二：直接按包名安装（npm，预构建产物）
+### 方式二：克隆后按目录安装（推荐，步骤最少）
 
-```sh
-dsh plugin --profile <profile> add @kazuma-124/dsh-token-usage
-dsh plugin --profile <profile> add @kazuma-124/dsh-conversation-notebook
+```powershell
+git clone https://github.com/Kazuma-124/Personal_DSH_Plugins.git
 ```
 
-npm 上是发布时构建好的产物，安装过程不会执行本仓库的构建脚本，也不需要放行 `allowBuilds`。桌面版 App 请改用 **插件 → 添加插件** 搜索包名，`dsh plugin --profile web` 只会装进 `profiles/web`，桌面版看不到。
+然后在 DSH 里用 **插件 → 添加插件** 选择克隆下来的子目录：
 
-### 方式三：本地目录（仓库开发者用）
+- `Personal_DSH_Plugins/dsh-token-usage`
+- `Personal_DSH_Plugins/conversation-notebook`
+
+桌面版和 `dsh web` 都可以这样装。也可以走命令行（`<profile>` 换成实际的 profile 名）：
+
+```sh
+dsh plugin --profile <profile> add ./Personal_DSH_Plugins/dsh-token-usage
+dsh plugin --profile <profile> add ./Personal_DSH_Plugins/conversation-notebook
+```
+
+按目录 / 本地路径安装是 pnpm 的 `link`，不执行任何构建脚本，也不需要放行 `allowBuilds`。注意 `conversation-notebook` 的 `dist/` 已经在仓库里构建好；改 `src/` 之后要自己跑一次 `node build.mjs`。
+
+### 方式三：复制到 profile 的插件目录（仓库开发者自用）
 
 `scripts/deploy.mjs` 把两个插件复制到当前 profile 的默认插件目录 `<profile>/created-plugins`，复制目标目录名保持不变（`dsh-token-usage`、`e1727a2d-8dfb-4483-8fd4-2a5078b2229e`），因此改包名不影响本机已安装的条目。
 
@@ -44,6 +57,13 @@ node scripts/deploy.mjs   # 需要 DSH_PROFILE_DIR，DSH 会话的 shell 里已�
 ```
 
 之后按插件 README 的说明刷新页面或重启 DSH。
+
+## 怎么找到这个仓库
+
+- **GitHub 仓库的 About**：description 与 topics（`dsh-plugin`、`deepseek-harness`、`dsh`）——GitHub 搜索和社区目录都读它。
+- **[awesome-dsh-plugin](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin)**：条目草稿在 [`catalog/`](catalog/README.md)。这个目录同时喂给 dsh-market 插件、[dshmarket.com](https://dshmarket.com) 和 [awesome-dsh-plugin.com](https://awesome-dsh-plugin.com)，并发布成一份 format-1 索引，所以进目录 = 同时进市场、网站和别人「发现」页里的那个源。
+- **本仓库的插件索引**：`https://cdn.jsdelivr.net/gh/Kazuma-124/Personal_DSH_Plugins@main/site/index.json`，由 [`scripts/build-index.mjs`](scripts/build-index.mjs) 从包字段生成，DSH「发现」页可直接添加。
+- 页面正文（本 README 与两个插件 README）里的名词、安装命令、能力描述，是普通搜索引擎唯一能抓到的内容，改动时别把它们删掉。
 
 ## DSH 实际会校验什么
 
@@ -99,20 +119,26 @@ node build.mjs                                  # 改 src/ 后必须重建 dist/
 node --test tests/*.test.mjs
 ```
 
-`conversation-notebook` 的 `dist/` 是提交进仓库的构建产物：npm 包和 git 安装都直接使用它，不依赖安装时的构建。
+`conversation-notebook` 的 `dist/` 是提交进仓库的构建产物：按目录安装和 git 安装都直接使用它，不依赖安装时的构建。
 
 ## 发布与索引
 
-索引由脚本生成，字段全部从包自身读取（`name`、`version`、`engines.dsh`、locale 文案、图标），因此不会与已发布的包漂移。
+分发不经过 npm，索引指向本仓库的**固定 commit**。索引由脚本生成，字段全部从包自身读取（`name`、`version`、`engines.dsh`、locale 文案、图标），因此不会与代码漂移。
 
 ```powershell
-npm install                 # 只装 @deepseek-ai/dsh-plugin-market-index 用于校验
-npm run index               # 写 site/index.json（npm 源）
-npm run index:check         # CI 用：文件是否与包一致
-node scripts/build-index.mjs --source git   # 不想发 npm 时，改用本仓库固定 commit
+npm install             # 只装 @deepseek-ai/dsh-plugin-market-index 用于校验
+npm run index           # 提交后运行：把 HEAD 固定进 site/index.json
+npm run index:check     # 只验证 site/index.json 是否最新
 ```
 
-发布新版本的顺序：改包并提交 → `npm publish` → `npm run index` → 提交 `site/`。索引里写的是 `name@version`，版本没发到 npm 之前，索引条目装了会失败。
+发布一个改动的顺序：
+
+1. 改包、跑测试（必要时 `node build.mjs`）。
+2. **提交**插件目录的改动——索引固定的是 commit，不是分支头。
+3. `npm run index`：脚本会先检查插件目录有没有未提交的改动，有就直接报错。
+4. 提交 `site/index.json` 并 push。jsDelivr 对 `@main` 有缓存，推送后可能要几分钟才生效。
+
+将来如果改发 npm，把 `--source npm` 传给脚本即可；不加参数时默认 `--source git`。
 
 ## 许可
 

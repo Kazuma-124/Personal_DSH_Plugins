@@ -30,9 +30,9 @@ npm run index:check                                # 只验证是否最新
 
 - **包名与 patch 的一致性**：`conversation-notebook/cordis.patch.yml` 的行 id 是 `<包名>:notebook`，`dsh-token-usage/cordis.yml` 的 `name` 是包名。改包名必须同时改这两处，以及 `conversation-notebook/build.mjs` 里的包名校验。改名会让已安装的副本变成另一个 bundle，需要卸载重装。
 - **部署目录名**：`scripts/deploy.mjs` 在 profile 里固定使用 `dsh-token-usage` 和 `e1727a2d-8dfb-4483-8fd4-2a5078b2229e` 两个目录名，与本仓库的包名解耦。不要为了「对齐命名」去改这两个目录，那会让用户已安装的条目变成孤儿。
-- **索引与包的一致性**：`site/index.json` 是生成物，字段全部来自 `package.json`、`locale/*.json` 和 `icon.svg`。不要手改；改完包后跑 `npm run index`。索引里列出的 `name@version` 必须是仓库里真实存在、且已经或即将发到 npm 的版本。
+- **索引与包的一致性**：`site/index.json` 是生成物，字段全部来自 `package.json`、`locale/*.json` 和 `icon.svg`。不要手改；改完包并提交后跑 `npm run index`。索引固定的是 commit，所以“先提交、再生成”的顺序不能颠倒。
 - **只读与隐私边界**：两个插件都不调用模型、不上传数据。`dsh-token-usage` 只读本机 DSH 数据目录、页面与 API 只允许回环地址；`conversation-notebook` 只通过已认证的 Connection 路由读写本机磁盘。新功能不能突破这两条。
-- **`conversation-notebook/dist/` 是提交物**：npm 包和 git 安装都直接用它。改 `src/` 却忘了重建，等于发布旧代码。
+- **`conversation-notebook/dist/` 是提交物**：按目录安装和 git 安装都直接用它。改 `src/` 却忘了重建，等于发布旧代码。
 
 ## 4. Token 纪律
 
@@ -40,10 +40,16 @@ npm run index:check                                # 只验证是否最新
 
 ## 5. 发布流程
 
+**不经过 npm**。分发 = 克隆仓库按目录安装，索引固定本仓库的 commit。
+
 1. 改包，跑对应测试，必要时 `node build.mjs`。
-2. 提交并推送（`site/` 改动一起提）。
-3. `npm publish`（桌面版发出的包在 npm 上是构建产物；仓库根 `package.json` 是 `private`，不要发布它）。
-4. `npm run index` → 提交 `site/index.json`。索引走 `https://cdn.jsdelivr.net/gh/Kazuma-124/Personal_DSH_Plugins@main/site/index.json`，jsDelivr 对 `@main` 有缓存，推送后可能需要几分钟才生效。
+2. **提交插件目录**——索引固定的是 commit，未提交的改动意味着索引描述的不是它指向的代码。
+3. `npm run index`（默认 `--source git`；脚本会拒绝在插件目录有未提交改动时生成）。
+4. 再提交 `site/index.json` 并 push。索引走 `https://cdn.jsdelivr.net/gh/Kazuma-124/Personal_DSH_Plugins@main/site/index.json`，jsDelivr 对 `@main` 有缓存，推送后可能需要几分钟才生效。
+
+提交 `site/index.json` 之后 index 里固定的 commit 会落后一个提交，这是正常的：那个 commit 里已经包含它所描述的插件代码。
+
+将来若真的发 npm，用 `node scripts/build-index.mjs --source npm`；在那之前不要写 `source: { "type": "npm" }`，那条目装了会失败。
 
 ## 6. 索引的硬约束（改格式前先读）
 

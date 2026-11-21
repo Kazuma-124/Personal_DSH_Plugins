@@ -13,10 +13,14 @@
  *   - icon → icon.svg next to the package
  *
  * Usage:
- *   node scripts/build-index.mjs                 # write site/index.json (npm sources)
- *   node scripts/build-index.mjs --source git    # point at a pinned commit of this repo
+ *   node scripts/build-index.mjs                 # write site/index.json (pinned git commit, the default)
+ *   node scripts/build-index.mjs --source npm    # list npm versions instead, once they are published
  *   node scripts/build-index.mjs --check         # verify the committed file is current
- *   node scripts/build-index.mjs --strict        # fail when a version is not on npm yet
+ *   node scripts/build-index.mjs --allow-dirty   # generate before committing (the pin then lags the code)
+ *
+ * A git source installs a pinned commit of this repository, so the plugin
+ * directories must be committed first: the index is regenerated after every
+ * release commit that changes a plugin.
  *
  * Requires `@deepseek-ai/dsh-plugin-market-index` (devDependency) so the output
  * is validated by DSH's own rules before it is written.
@@ -56,14 +60,27 @@ function argument(name, fallback) {
   return index === -1 ? fallback : process.argv[index + 1];
 }
 
-const SOURCE = argument('source', 'npm');
+const SOURCE = argument('source', 'git');
 const PUBLIC_BASE = argument('base', process.env.INDEX_PUBLIC_BASE ?? DEFAULT_PUBLIC_BASE);
 const CHECK_ONLY = process.argv.includes('--check');
 const STRICT = process.argv.includes('--strict');
+const ALLOW_DIRTY = process.argv.includes('--allow-dirty');
 
 function fail(message) {
   console.error(`build-index: ${message}`);
   process.exit(1);
+}
+
+/**
+ * Refuse a git pin that would not contain the code it describes: a committed
+ * index installs HEAD, so uncommitted plugin changes make it lie.
+ */
+function assertPluginsCommitted() {
+  const dirty = execFileSync('git', ['status', '--porcelain', '--', ...PLUGINS.map(spec => spec.dir)], {
+    cwd: REPO_ROOT, encoding: 'utf8',
+  }).trim();
+  if (dirty === '') return;
+  fail(`uncommitted changes in a plugin directory:\n${dirty}\nCommit them first, then regenerate, so the pinned commit contains them (or pass --allow-dirty).`);
 }
 
 async function readJson(file) {
@@ -179,6 +196,8 @@ async function pluginEntry({ dir, category }) {
 
 async function main() {
   if (SOURCE !== 'npm' && SOURCE !== 'git') fail('--source must be npm or git');
+
+  if (SOURCE === 'git' && !ALLOW_DIRTY) assertPluginsCommitted();
 
   const built = [];
   for (const spec of PLUGINS) built.push(await pluginEntry(spec));
