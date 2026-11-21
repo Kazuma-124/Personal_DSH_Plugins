@@ -1,4 +1,4 @@
-# DSH Token 用量统计
+﻿# DSH Token 用量统计
 
 **English.** A DSH bundle that adds a **Token usage** entry to the left sidebar: totals, a per-project table and a trend chart, computed from local session logs. It never calls a model, never writes back to a conversation or log, and never uploads data. Not published to npm: clone the repository and add this directory in **Plugins → Add plugin**, or add this repository's plugin index in **Plugins → Discover**.
 
@@ -8,7 +8,7 @@
 
 | 方式 | 命令 / 操作 |
 |:--|:--|
-| 插件索引 | **插件** → 开启实验性「自定义插件索引」→ **发现** → 添加索引源 `https://cdn.jsdelivr.net/gh/Kazuma-124/Personal_DSH_Plugins@main/site/index.json` |
+| 插件索引 | **插件** → 开启实验性「自定义插件索引」→ **发现** → 添加索引源 `https://cdn.jsdelivr.net/gh/Kazuma-124/Personal_DSH_Plugins@main/docs/index.json` |
 | 克隆仓库 | `git clone https://github.com/Kazuma-124/Personal_DSH_Plugins.git`，再在 **插件 → 添加插件** 里选 `Personal_DSH_Plugins/dsh-token-usage` |
 | 本地目录 | 仓库根运行 `node scripts/deploy.mjs`，再把 `created-plugins/dsh-token-usage/index.mjs` 以 `file://` 行插入 profile 的 `cordis.patch.yml` |
 

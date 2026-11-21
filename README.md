@@ -1,8 +1,8 @@
-# Personal DSH Plugins
+﻿# Personal DSH Plugins
 
 [Kazuma-124](https://github.com/Kazuma-124) 的 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)（`dsh`）插件仓库：每个插件都是可独立安装的**组合包**（bundle），仓库同时发布一个 **DSH 插件索引**，方便在应用的「发现」页里浏览、安装和更新。
 
-**English.** Two installable DeepSeek Harness bundles — token usage statistics and a per-conversation notebook. Both are plain JavaScript, have no third-party runtime dependencies, never call a model and never upload data. Not published to npm: clone the repo and install a directory, or add the plugin index (`https://cdn.jsdelivr.net/gh/Kazuma-124/Personal_DSH_Plugins@main/site/index.json`) in **Plugins → Discover**. See [Install](#install) and [what DSH actually validates](#what-dsh-actually-validates).
+**English.** Two installable DeepSeek Harness bundles — token usage statistics and a per-conversation notebook. Both are plain JavaScript, have no third-party runtime dependencies, never call a model and never upload data. Not published to npm: clone the repo and install a directory, or add the plugin index (`https://cdn.jsdelivr.net/gh/Kazuma-124/Personal_DSH_Plugins@main/docs/index.json`) in **Plugins → Discover**. See [Install](#install) and [what DSH actually validates](#what-dsh-actually-validates).
 
 | 插件 | 作用 | 出现位置 | 仓库目录 |
 |:--|:--|:--|:--|
@@ -21,7 +21,7 @@
 2. 切到 **发现** → **添加索引源**，填入：
 
    ```text
-   https://cdn.jsdelivr.net/gh/Kazuma-124/Personal_DSH_Plugins@main/site/index.json
+   https://cdn.jsdelivr.net/gh/Kazuma-124/Personal_DSH_Plugins@main/docs/index.json
    ```
 
 3. 选中条目，确认来源后安装。安装过程会用 `git` 拉取索引里写的那个 commit（不是分支头），所以装到的东西是固定的。
@@ -62,7 +62,7 @@ node scripts/deploy.mjs   # 需要 DSH_PROFILE_DIR，DSH 会话的 shell 里已�
 
 - **GitHub 仓库的 About**：description 与 topics（`dsh-plugin`、`deepseek-harness`、`dsh`）——GitHub 搜索和社区目录都读它。
 - **[awesome-dsh-plugin](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin)**：条目草稿在 [`catalog/`](catalog/README.md)。这个目录同时喂给 dsh-market 插件、[dshmarket.com](https://dshmarket.com) 和 [awesome-dsh-plugin.com](https://awesome-dsh-plugin.com)，并发布成一份 format-1 索引，所以进目录 = 同时进市场、网站和别人「发现」页里的那个源。
-- **本仓库的插件索引**：`https://cdn.jsdelivr.net/gh/Kazuma-124/Personal_DSH_Plugins@main/site/index.json`，由 [`scripts/build-index.mjs`](scripts/build-index.mjs) 从包字段生成，DSH「发现」页可直接添加。
+- **本仓库的插件索引**：`https://cdn.jsdelivr.net/gh/Kazuma-124/Personal_DSH_Plugins@main/docs/index.json`，由 [`scripts/build-index.mjs`](scripts/build-index.mjs) 从包字段生成，DSH「发现」页可直接添加。
 - **落地页**：<https://kazuma-124.github.io/Personal_DSH_Plugins/>（GitHub Pages，给搜索引擎看的静态页）。同一目录也提供备用索引源 `https://kazuma-124.github.io/Personal_DSH_Plugins/index.json`，`github.io` 在部分网络下较慢，所以默认仍用 jsDelivr。
 - 页面正文（本 README 与两个插件 README）里的名词、安装命令、能力描述，是普通搜索引擎唯一能抓到的内容，改动时别把它们删掉。
 
@@ -102,8 +102,8 @@ node scripts/deploy.mjs   # 需要 DSH_PROFILE_DIR，DSH 会话的 shell 里已�
 ├── conversation-notebook/     # 插件 B：Connection 路由 + 磁盘存储 + 右侧栏页签
 ├── scripts/
 │   ├── deploy.mjs             # 复制两个插件到当前 profile 的 created-plugins
-│   └── build-index.mjs        # 生成并校验 site/index.json（DSH 插件索引）
-├── site/                      # 索引发布目录：index.json + icons/
+│   └── build-index.mjs        # 生成并校验 docs/index.json（DSH 插件索引）
+├── docs/                      # GitHub Pages 发布目录：落地页 + 索引 + icons/
 ├── catalog/                   # 提交到社区目录 awesome-dsh-plugin 的条目草稿
 ├── package.json               # 仓库工具：只装索引校验器，不发 npm
 └── AGENTS.md                  # 给在本仓库工作的 Agent 的说明
@@ -128,8 +128,8 @@ node --test tests/*.test.mjs
 
 ```powershell
 npm install             # 只装 @deepseek-ai/dsh-plugin-market-index 用于校验
-npm run index           # 提交后运行：把 HEAD 固定进 site/index.json
-npm run index:check     # 只验证 site/index.json 是否最新
+npm run index           # 提交后运行：把 HEAD 固定进 docs/index.json
+npm run index:check     # 只验证 docs/index.json 是否最新
 ```
 
 发布一个改动的顺序：
@@ -137,7 +137,7 @@ npm run index:check     # 只验证 site/index.json 是否最新
 1. 改包、跑测试（必要时 `node build.mjs`）。
 2. **提交**插件目录的改动——索引固定的是 commit，不是分支头。
 3. `npm run index`：脚本会先检查插件目录有没有未提交的改动，有就直接报错。
-4. 提交 `site/index.json` 并 push。jsDelivr 对 `@main` 有缓存，推送后可能要几分钟才生效。
+4. 提交 `docs/index.json` 并 push。jsDelivr 对 `@main` 有缓存，推送后可能要几分钟才生效。
 
 将来如果改发 npm，把 `--source npm` 传给脚本即可；不加参数时默认 `--source git`。
 

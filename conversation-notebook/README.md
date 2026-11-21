@@ -1,4 +1,4 @@
-# 对话记事本
+﻿# 对话记事本
 
 **English.** A DSH bundle that adds a **Conversation notebook** entry to the right sidebar: one plain-text note per conversation, saved to the DSH host's disk through authenticated owner-only routes. It never reads conversation content, never calls a model, never injects context and never uploads data. Not published to npm: clone the repository and add this directory in **Plugins → Add plugin**, or add this repository's plugin index in **Plugins → Discover**.
 
@@ -10,7 +10,7 @@
 
 | 方式 | 命令 / 操作 |
 |:--|:--|
-| 插件索引 | **插件** → 开启实验性「自定义插件索引」→ **发现** → 添加索引源 `https://cdn.jsdelivr.net/gh/Kazuma-124/Personal_DSH_Plugins@main/site/index.json` |
+| 插件索引 | **插件** → 开启实验性「自定义插件索引」→ **发现** → 添加索引源 `https://cdn.jsdelivr.net/gh/Kazuma-124/Personal_DSH_Plugins@main/docs/index.json` |
 | 克隆仓库 | `git clone https://github.com/Kazuma-124/Personal_DSH_Plugins.git`，再在 **插件 → 添加插件** 里选 `Personal_DSH_Plugins/conversation-notebook` |
 | 本地目录 | 仓库根运行 `node scripts/deploy.mjs`，再在 **插件 → 添加插件** 里选择 `created-plugins/e1727a2d-8dfb-4483-8fd4-2a5078b2229e` |
 

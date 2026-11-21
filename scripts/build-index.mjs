@@ -1,6 +1,6 @@
-#!/usr/bin/env node
+﻿#!/usr/bin/env node
 /**
- * Generate `site/index.json` — a DSH plugin market index (format 1) — from the
+ * Generate `docs/index.json` — a DSH plugin market index (format 1) — from the
  * plugin packages in this repository.
  *
  * The index is the machine-readable entry point for DSH's Discover tab, the
@@ -13,7 +13,7 @@
  *   - icon → icon.svg next to the package
  *
  * Usage:
- *   node scripts/build-index.mjs                 # write site/index.json (pinned git commit, the default)
+ *   node scripts/build-index.mjs                 # write docs/index.json (pinned git commit, the default)
  *   node scripts/build-index.mjs --source npm    # list npm versions instead, once they are published
  *   node scripts/build-index.mjs --check         # verify the committed file is current
  *   node scripts/build-index.mjs --allow-dirty   # generate before committing (the pin then lags the code)
@@ -32,10 +32,10 @@ import { dirname, extname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const REPO_ROOT = dirname(dirname(fileURLToPath(import.meta.url)));
-const SITE_DIR = resolve(REPO_ROOT, 'site');
+const SITE_DIR = resolve(REPO_ROOT, 'docs');
 const INDEX_FILE = resolve(SITE_DIR, 'index.json');
 const REPOSITORY_URL = 'https://github.com/Kazuma-124/Personal_DSH_Plugins';
-const DEFAULT_PUBLIC_BASE = 'https://cdn.jsdelivr.net/gh/Kazuma-124/Personal_DSH_Plugins@main/site/';
+const DEFAULT_PUBLIC_BASE = 'https://cdn.jsdelivr.net/gh/Kazuma-124/Personal_DSH_Plugins@main/docs/';
 const ICON_MAX_BYTES = 256 * 1024;
 const ICON_EXTENSIONS = new Set(['.svg', '.png', '.jpg', '.jpeg', '.webp']);
 
@@ -231,8 +231,8 @@ async function main() {
   const previous = existsSync(INDEX_FILE) ? await readFile(INDEX_FILE, 'utf8') : undefined;
 
   if (CHECK_ONLY) {
-    if (previous !== json) fail('site/index.json is out of date; run `npm run index`');
-    console.log('build-index: site/index.json is up to date');
+    if (previous !== json) fail('docs/index.json is out of date; run `npm run index`');
+    console.log('build-index: docs/index.json is up to date');
     return;
   }
 
