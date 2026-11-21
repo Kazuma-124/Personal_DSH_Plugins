@@ -1,4 +1,4 @@
-import { createNotesStore, noteEditorState } from './notes-store.js';
+import { createNotesStore, noteEditorState, migrateLegacyNotes } from './notes-store.js';
 
 window.__ModuleLoader__.load({
   id: '@dsh-local/view-e1727a2d-8dfb-4483-8fd4-2a5078b2229e',
@@ -11,18 +11,30 @@ window.__ModuleLoader__.load({
       zh: {
         title: '对话记事本', description: '此对话的独立笔记，手动编辑并自动保存。',
         scope: '仅属于当前对话', placeholder: '从这里开始，记下你的想法…',
-        label: '当前对话的笔记', empty: '空白笔记 · 输入后自动保存', saved: '已保存',
+        label: '当前对话的笔记', empty: '空白笔记 · 输入后自动保存', saved: '已保存到磁盘',
+        loading: '正在读取笔记并迁移旧数据…', saving: '正在保存…',
         saveError: '保存失败。当前内容尚未保存，请保留此页面并重试。',
-        readError: '无法读取笔记。请重试，以免覆盖已有内容。',
-        retry: '重试', retrying: '正在重试…', persistence: '保存在此设备的当前浏览器中',
+        readError: '无法读取笔记或迁移旧数据。请重试，以免覆盖已有内容。',
+        conflict: '另一窗口已更新此笔记。当前草稿已保留，请先复制草稿，再加载最新版本。',
+        reload: '加载最新版本', confirmReload: '加载最新版本将替换当前草稿。请确认已复制需要保留的文字。',
+        migrationError: '部分旧笔记尚未迁移，请重试。迁移完成前请勿清除浏览器数据。',
+        migrationUnavailable: '无法访问浏览器旧数据。磁盘笔记可正常使用；若以前有旧笔记，请先恢复浏览器存储访问。',
+        migrationRetry: '重试旧笔记迁移', migrationRunning: '正在迁移旧笔记，请暂勿清除浏览器数据…',
+        retry: '重试', retrying: '正在重试…', persistence: '保存在本机磁盘，清除浏览器数据不会删除已保存的笔记',
       },
       en: {
         title: 'Conversation notebook', description: 'A separate note for this conversation. Edit manually; changes save automatically.',
         scope: 'Only for this conversation', placeholder: 'Start here. Write down your thoughts…',
-        label: 'Note for the current conversation', empty: 'Blank note · Saves as you type', saved: 'Saved',
+        label: 'Note for the current conversation', empty: 'Blank note · Saves as you type', saved: 'Saved to disk',
+        loading: 'Loading notes and migrating old data…', saving: 'Saving…',
         saveError: 'Could not save. Keep this page open and retry to preserve your draft.',
-        readError: 'Could not read the note. Retry before editing to protect existing content.',
-        retry: 'Retry', retrying: 'Retrying…', persistence: 'Stored in this browser on this device',
+        readError: 'Could not read the note or migrate old data. Retry to protect existing content.',
+        conflict: 'Another window updated this note. Your draft is retained. Copy it before loading the latest version.',
+        reload: 'Load latest version', confirmReload: 'Loading the latest version replaces this draft. Copy any text you want to keep first.',
+        migrationError: 'Some old notes still need migration. Retry before clearing browser data.',
+        migrationUnavailable: 'Old browser storage is inaccessible. Disk notes work; restore browser storage access if you have old notes.',
+        migrationRetry: 'Retry old note migration', migrationRunning: 'Migrating old notes. Please keep browser data until migration completes…',
+        retry: 'Retry', retrying: 'Retrying…', persistence: 'Stored on this device’s disk; clearing browser data does not delete saved notes',
       },
     };
     function NotebookIcon({ size = 16, className } = {}) {
@@ -60,7 +72,45 @@ window.__ModuleLoader__.load({
       inject: ['slots', 'locale', 'sidebarRightTabs', 'sidebarRight'],
       apply(ctx) {
         ctx.effect(() => {
-          const notes = createNotesStore(() => window.localStorage, ID + ':v1:session:');
+          async function request(action, input) {
+            const response = await window.fetch('/api/conversation-notebook/' + action, {
+              method: 'POST', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(input), cache: 'no-store', signal: AbortSignal.timeout(30000),
+            });
+            const result = await response.json();
+            if (!response.ok) throw Object.assign(new Error(result.error?.message || 'Notebook request failed'), { code: result.error?.code });
+            if (!Object.hasOwn(result, 'record')) throw new Error('Invalid notebook response');
+            return result.record;
+          }
+          const backend = {
+            read: sessionId => request('read', { sessionId }),
+            write: (sessionId, text, revision) => request('write', { sessionId, text, revision }),
+            importLegacy: (sessionId, text) => request('import', { sessionId, text }),
+          };
+          let migration;
+          let migrationStatus = 'running';
+          const migrationListeners = new Set();
+          const setMigrationStatus = value => { migrationStatus = value; for (const notify of migrationListeners) notify(); };
+          function ensureMigrated() {
+            if (!migration) {
+              setMigrationStatus('running');
+              migration = migrateLegacyNotes(() => window.localStorage, ID + ':v1:session:', backend)
+                .then(result => { setMigrationStatus(result.status); return result; })
+                .catch(error => { migration = null; setMigrationStatus('error'); throw error; });
+            }
+            return migration;
+          }
+          const notes = createNotesStore({ ...backend, read: async sessionId => {
+            try { await ensureMigrated(); }
+            catch (error) {
+              // A failed old note blocks only its own editor. Other notes remain usable.
+              if (!error.failedIds || error.failedIds.includes(sessionId)) throw error;
+            }
+            return backend.read(sessionId);
+          } });
+          // Migrate every owned old key, including unopened and archived notes.
+          // A failure remains retryable when the editor next loads.
+          ensureMigrated().catch(() => {});
           const disposeLocale = ctx.locale.register(NS, dictionaries);
           const boundT = ctx.locale.bind(NS);
           const t = boundT;
@@ -71,6 +121,9 @@ window.__ModuleLoader__.load({
             const snapshot = React.useCallback(() => notes.get(sessionId), [sessionId]);
             const state = React.useSyncExternalStore(subscribe, snapshot, snapshot);
             const { failure, readOnly, retryVisible, retryDisabled } = noteEditorState(state);
+            const migrationState = React.useSyncExternalStore(
+              React.useCallback(notify => { migrationListeners.add(notify); return () => migrationListeners.delete(notify); }, []),
+              () => migrationStatus, () => migrationStatus);
             return h('section', { className: 'cn-e1727a2d', 'aria-label': t('title') },
               h('style', null, css),
               h('div', { className: 'cn-e1727a2d-head' }, t('scope')),
@@ -78,16 +131,24 @@ window.__ModuleLoader__.load({
                 // Remount on session changes so selection/undo cannot leak between notes.
                 key: sessionId, className: 'cn-e1727a2d-editor', 'aria-label': t('label'),
                 placeholder: t('placeholder'), value: state.text, readOnly, 'aria-invalid': failure,
-                'aria-busy': state.status === 'retrying',
+                'aria-busy': ['loading', 'retrying', 'saving'].includes(state.status),
                 spellCheck: true, onChange: event => notes.save(sessionId, event.target.value),
               }),
               h('div', { className: 'cn-e1727a2d-footer' },
                 h('span', { className: failure ? 'cn-e1727a2d-error' : undefined,
                   role: failure ? 'alert' : 'status', 'aria-live': failure ? 'assertive' : 'polite' }, t(state.status)),
                 retryVisible && h('button', { type: 'button', className: 'cn-e1727a2d-retry', disabled: retryDisabled,
-                  onClick: () => notes.retry(sessionId) }, t(retryDisabled ? 'retrying' : 'retry'))),
+                  onClick: () => notes.retry(sessionId) }, t(retryDisabled ? 'retrying' : 'retry')),
+                state.status === 'conflict' && h('button', { type: 'button', className: 'cn-e1727a2d-retry',
+                  onClick: () => { if (window.confirm(t('confirmReload'))) notes.reload(sessionId); } }, t('reload'))),
               state.status === 'readError' && h('div', { className: 'cn-e1727a2d-hint cn-e1727a2d-error' }, t('readError')),
-              state.text === '' && h('div', { className: 'cn-e1727a2d-hint' }, t('persistence')));
+              state.text === '' && h('div', { className: 'cn-e1727a2d-hint' }, t('persistence')),
+              migrationState !== 'done' && h('div', { className: 'cn-e1727a2d-hint', role: 'status', 'aria-live': 'polite' },
+                t(migrationState === 'running' ? 'migrationRunning' : migrationState === 'unavailable' ? 'migrationUnavailable' : 'migrationError'),
+                migrationState !== 'running' && h('button', { type: 'button', className: 'cn-e1727a2d-retry',
+                  onClick: () => { migration = null; ensureMigrated().then(() => {
+                    if (notes.get(sessionId).status === 'readError') notes.retry(sessionId);
+                  }).catch(() => {}); } }, t('migrationRetry'))));
           }
           function Title(props) {
             const t = props.t ?? boundT;
@@ -102,11 +163,13 @@ window.__ModuleLoader__.load({
             { name: 'sidebar.right.pane.tab', key: ID, locale: NS }, Body));
           const disposeTitle = ctx.slots.inject('sidebar.right.pane.tab.title', () => ctx.slots.register(
             { name: 'sidebar.right.pane.tab.title', key: ID, locale: NS }, Title));
-          const storageChanged = event => notes.onStorage(event);
-          window.addEventListener('storage', storageChanged);
+          const beforeUnload = event => {
+            if (notes.hasUnsaved()) { event.preventDefault(); event.returnValue = ''; }
+          };
+          window.addEventListener('beforeunload', beforeUnload);
           return () => {
             // Stop listeners before touching tabs; close only this plugin's exact kind.
-            window.removeEventListener('storage', storageChanged);
+            window.removeEventListener('beforeunload', beforeUnload);
             for (const tab of ctx.sidebarRight.openTabs.getSnapshot()) {
               if (tab.kind === ID) {
                 try { ctx.sidebarRight.closeIn(tab.sessionId, tab.tabId); }

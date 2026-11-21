@@ -1,55 +1,54 @@
 # AGENTS.md — conversation-notebook
 
-给后续改这个插件的智能体看的操作手册。**先读完本文再动手**。
+给后续维护此插件的智能体看的操作手册，动手前先读完。
 
-## 1. 它是什么
+## 1. 功能和数据边界
 
-- DSH 右侧栏插件「对话记事本」：每个对话一份独立纯文本笔记，由用户手动维护，输入即保存。
-- 与对话一一对应：键为会话 ID；不读对话正文、不调用模型、不注入上下文、不提供代理读写工具。
-- 构成：Host 空壳行（`dist/index.js` 只有 `apply(){}`）+ 浏览器模块（`dist/client.js`，注册右侧栏 tab 类型、guide 入口、正文与标题槽位）。
-- 无 npm 依赖；浏览器端只用宿主 `require('react')`，不 import 任何 DSH Client 包。
+- DSH 右侧栏「对话记事本」：每个对话一份独立纯文本笔记，只由用户手动维护。
+- 不读对话正文、不调用模型、不注入上下文、不提供代理读写工具。
+- Host 通过 `ctx.connection.fetch.register` 提供已认证、owner-only 的 `/api/conversation-notebook/{read,write,import}` POST 路由。不能替换成绕过 Connection 的公开 webServer 路由。
+- 磁盘数据默认 `~/.dsh/conversation-notebook/`；Host 的 `DSH_HOME` 可改变根目录。数据不能放入会被部署覆盖的插件目录，也不随归档/卸载/关闭标签删除。
+- 无第三方依赖；Client 只使用宿主 React 和普通 Fetch。Desktop 的 `dsh-app://app/api/...` 会转发给已认证 Host。
 
 ## 2. 文件地图
 
-| 文件 | 作用 | 改动风险 |
-|:--|:--|:--|
-| `src/client.js` | 槽位组件、样式、中英文文案、注册与清理 | 中，槽位契约改错会整块空白 |
-| `src/notes-store.js` | localStorage 存储层、状态机、`noteEditorState` 语义 | 高，影响草稿/失败路径 |
-| `build.mjs` | 把两个源文件打包成 `dist/client.js`，并生成 `dist/index.js` | 中 |
-| `src/` + `dist/` | 配置用源码；`dist/` 是实际加载产物，**改源码必须重建** | — |
-| `cordis.patch.yml` / `package.json` | bundle 补丁与 `dsh.client` 声明 | 中 |
-| `locale/{zh,en}.json` | 插件页标题、描述 | 低 |
-| `tests/notebook.test.mjs` | 7 项回归测试 | — |
+- `src/client.js`：槽位、主题样式、中英文文案、迁移协调、注册与清理。
+- `src/notes-store.js`：异步草稿/保存/重试/冲突状态机、旧浏览器命名空间扫描。
+- `src/host.js`：Connection 路由、输入与请求体限制、数据目录。
+- `src/disk-store.js`：真实 JSON 文件、临时写入/同步/重命名、版本检查、跨进程文件锁和旧值备份。
+- `build.mjs`：将状态机内联进 `dist/client.js`；复制 Host 和磁盘模块至 `dist/`。源码变更必须重建。
+- `tests/*.test.mjs`：状态机、迁移、磁盘失败路径与并发、Host 路由、清理和独立打包。
+- `locale/{zh,en}.json`：插件页面的标题与描述。
 
-## 3. 生效范围（别乱猜）
+## 3. 部署和生效
 
-- 仓库是开发源，运行时不走仓库路径。仓库根的 `node scripts/deploy.mjs` 会把本目录复制到当前 profile 的默认插件目录 `<profile>/created-plugins/e1727a2d-8dfb-4483-8fd4-2a5078b2229e`（由 `DSH_PROFILE_DIR` 决定），并在复制前运行 `build.mjs`。
-- 首次安装：DSH「插件」页 →「添加插件」→ 选择部署后的目录；DSH 会写入 profile 的 `link:` 依赖，`node_modules/@dsh-local/...` 指向该目录。之后**改源码 + 运行部署脚本**即更新运行代码，无需重装。
-- 改 `dist/` 后需刷新页面重新加载浏览器模块；Host 行为未变时通常不必重启 DSH。
-- profile 里的 link 失效（目录被删或改名）时，重新运行部署脚本，并在插件页重新选择目录。
-- 桌面端页面来源是稳定的 `dsh-app://app`，localStorage 跨启动保留；若通过浏览器访问 `127.0.0.1:<端口>`，存储随来源地址变化。端口每次启动可能不同，从会话的 “DSH Web GUI URL” 取。
+- 开发源不等于运行目录。当前插件目标为 `<DSH_PROFILE_DIR>/created-plugins/e1727a2d-8dfb-4483-8fd4-2a5078b2229e`。
+- 仓库根 `scripts/deploy.mjs` 会同时更新其他插件；只改本插件时应只同步本插件，勿覆盖无关插件。
+- `package.json` 的 `link:` 指向部署目录。仅 Client 变更可刷新页面；Host 变更需重启 DSH。不能承诺未重启的进程已经使用新版后端。
+- 更新时保留磁盘数据目录。复制插件目录不包含笔记备份。
 
-## 4. 槽位契约（改 UI 前先核对）
+## 4. 槽位契约
 
-- tab 类型：`ctx.sidebarRightTabs.register({ id, kind, title, guide: [{ id, order, title, description, icon }] })`；正文与标题分别注册到 keyed 槽位 `sidebar.right.pane.tab`、`sidebar.right.pane.tab.title`，key 必须是 tab 类型的 `id`。
-- 注册时 `locale: NS` 才拿到注入的 `t`；代码里仍保留 `props.t ?? boundT` 兜底。
-- 只使用主题令牌（`--dsw-alias-*`、`--dsw-specific-sidebar-fill`）；`--dsw-alias-border-l3` 等宿主自用令牌可用但不保证文档化。颜色不要在容器上用 `bg-layer-1`（比侧栏亮一档）。
+- 仍使用 `sidebarRightTabs.register` 的独立 kind、guide 入口与 keyed 槽位 `sidebar.right.pane.tab` / `sidebar.right.pane.tab.title`，key 等于 tab 类型 ID。
+- 槽位注册指定 `locale: NS`；组件保留 `props.t ?? boundT` 兜底。
+- 只用宿主主题令牌；勿给容器加比侧栏更亮的 `bg-layer-1`。
+- 卸载先摘 beforeunload，再按 kind 精确关闭本插件所有标签（单个失败不能中断），最后摘槽位、tab 类型、locale、store。已有保存请求继续完成。
 
-## 5. 验证预算（硬性）
+## 5. 不能破坏的数据行为
 
-1. 纯文案/样式：`node build.mjs` + `node --test tests/*.test.mjs`（用 DSH 自带运行时：`ELECTRON_RUN_AS_NODE=1 "<DSH_NODE_EXECUTABLE>" --test ...`）。
-2. 存储/状态机：必须跑测试，全绿。
-3. 真实视觉：无浏览器控制时只能确认 slot occupant 为 active，**不得声称外观已验收**。
+- 读取期间/读取失败/重试期间禁止输入；绝不能把未知笔记当作空白覆盖。
+- 保存状态只有在后端完成持久化后才显示已保存；失败保留最新草稿，提供显式重试。
+- 空文本为有效的已有记录，带修订号；显示 empty，不能用无文件语义替代。
+- 重试先进入 retrying，重复点击共用 pending promise。连续输入必须串行并合并中间草稿，旧请求成功不能误标新草稿已保存。
+- 写入必须带 expectedRevision，冲突保留草稿；加载新版本须用户明确确认替换草稿。
+- 所有 write/import 事务都要持跨进程锁；只能回收确认已死 PID 的锁，不能仅按 mtime 强行打破活锁。损坏锁/残留 reaper 保守失败，不冒险覆盖笔记。
+- 旧 key 为 `ID + ':v1:session:' + encodeURIComponent(sessionId)`。只扫描本插件命名空间，不读其他键的值。迁移所有旧记录，包括归档和未打开的对话。
+- 迁移成功前绝不能删除旧值；当前实现成功后也保留。已有磁盘内容不同则保留 canonical，并把旧文本原子备份到 legacy-backups。
+- 单条迁移失败不应中止其他条目；该对话仍阻止编辑，其他对话可用，UI 显示全局迁移警告并允许重试。
+- 单条笔记上限16MiB UTF-8，兼容旧浏览器配额；以后调整上限须考虑无损迁移和读取已有记录。
 
-## 6. 不能破坏的行为
+## 6. 验证
 
-- 读取失败时禁止编辑，绝不能覆盖未知的已有笔记；写入失败保留页面草稿并显式提示“未保存”。
-- 空字符串存取都归为 `empty`；重试先进入 `retrying` 让 `aria-live` 重播，重复点击复用同一 pending promise。
-- 卸载顺序：先摘 `storage` 监听，再按 `kind` 精确关闭本插件标签（单项失败不中断），最后摘槽位、tab 类型、locale 与 store。
-- 存储键 `…:v1:session:<encodeURIComponent(sessionId)>` 属于本插件命名空间，不要遍历或读取其他键。
-
-## 7. 已知限制
-
-- 仅本设备当前浏览器；清除浏览器数据即丢失。
-- 同键多标签最后写入优先；聚焦输入也可能被其他标签的写入覆盖。
-- 每次按键同步写入；长笔记未做防抖。
+- 源码或文案变更后，运行 build 和全部 tests（使用 DSH 自带 Node/Electron Node，`ELECTRON_RUN_AS_NODE=1`）。
+- 存储变更须覆盖失败不覆盖、重试、迁移冲突与跨进程CAS。
+- 没有浏览器控制时不得声称真实视觉或当前浏览器旧笔记迁移已验收；构建、测试、部署与真正重启后的激活须分开说明。

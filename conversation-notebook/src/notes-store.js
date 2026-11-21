@@ -1,93 +1,120 @@
-// Only plugin-owned keys are accessed. No conversation content is read.
-export function createNotesStore(getStorage, prefix) {
+// Shared asynchronous state. Durable acknowledgements alone mark a note saved.
+export function createNotesStore(api) {
   const entries = new Map();
-  const pendingRetries = new Map();
-  const keyOf = sessionId => prefix + encodeURIComponent(sessionId);
-  function entry(sessionId) {
-    let row = entries.get(sessionId);
+  let disposed = false;
+  function emit(row) { if (!disposed) for (const listener of row.listeners) listener(); }
+  function set(row, status) { row.state = { text: row.state.text, status }; emit(row); }
+  function entry(id) {
+    let row = entries.get(id);
     if (!row) {
-      row = { listeners: new Set(), state: { text: '', status: 'empty' } };
-      entries.set(sessionId, row);
-      load(sessionId, row);
+      row = { state: { text: '', status: 'loading' }, listeners: new Set(), revision: null, generation: 0, dirty: false, pending: null };
+      entries.set(id, row);
+      row.pending = load(id, row);
     }
     return row;
   }
-  function emit(row) { for (const listener of row.listeners) listener(); }
-  function load(sessionId, row) {
+  async function load(id, row) {
+    await Promise.resolve();
     try {
-      const text = getStorage().getItem(keyOf(sessionId));
-      row.state = { text: text ?? '', status: text ? 'saved' : 'empty' };
-    } catch {
-      row.state = { ...row.state, status: 'readError' };
-    }
+      const record = await api.read(id);
+      row.revision = record?.revision ?? null;
+      row.state = { text: record?.text ?? '', status: record?.text ? 'saved' : 'empty' };
+    } catch { set(row, 'readError'); }
+    finally { row.pending = null; emit(row); }
   }
-  function save(sessionId, text) {
-    const row = entry(sessionId);
-    // A failed read must never allow replacing an unknown existing note.
-    if (row.state.status === 'readError' || row.state.status === 'retrying') return;
-    try {
-      getStorage().setItem(keyOf(sessionId), text);
-      row.state = { text, status: text === '' ? 'empty' : 'saved' };
-    } catch {
-      // Keep the current draft visible and explicitly report that it is unsaved.
-      row.state = { text, status: 'saveError' };
-    }
-    emit(row);
-  }
-  return {
-    get: sessionId => entry(sessionId).state,
-    subscribe(sessionId, listener) {
-      const row = entry(sessionId);
-      row.listeners.add(listener);
-      return () => row.listeners.delete(listener);
-    },
-    save,
-    retry(sessionId) {
-      const row = entry(sessionId);
-      if (row.state.status === 'retrying') return pendingRetries.get(sessionId)?.promise;
-      const previous = row.state.status;
-      row.state = { ...row.state, status: 'retrying' };
-      emit(row);
-      // Yield one task so the retry state and disabled button reach the UI.
-      let resolve;
-      const promise = new Promise(done => { resolve = done; });
-      const timer = setTimeout(() => {
-        pendingRetries.delete(sessionId);
-        if (previous === 'saveError') {
-          row.state = { ...row.state, status: 'saveError' };
-          save(sessionId, row.state.text);
-        } else { load(sessionId, row); emit(row); }
-        resolve();
-      }, 0);
-      pendingRetries.set(sessionId, { timer, resolve, promise });
-      return promise;
-    },
-    onStorage(event) {
-      if (!event.key?.startsWith(prefix)) return;
-      // Read only notes that this plugin already has open, never enumerate storage.
-      for (const [sessionId, row] of entries) {
-        if (keyOf(sessionId) !== event.key || row.state.status === 'saveError' || row.state.status === 'retrying') continue;
-        load(sessionId, row);
-        emit(row);
+  async function drain(id, row) {
+    // Run after pending is installed, including when a transport throws synchronously.
+    await Promise.resolve();
+    while (row.dirty) {
+      const generation = row.generation;
+      const text = row.state.text;
+      set(row, 'saving');
+      try {
+        const record = await api.write(id, text, row.revision);
+        row.revision = record.revision;
+        if (generation === row.generation) {
+          row.dirty = false;
+          set(row, text === '' ? 'empty' : 'saved');
+        }
+      } catch (error) {
+        set(row, error?.code === 'conflict' ? 'conflict' : 'saveError');
+        break;
       }
+    }
+    row.pending = null;
+  }
+  const store = {
+    get: id => entry(id).state,
+    subscribe(id, listener) { const row = entry(id); row.listeners.add(listener); return () => row.listeners.delete(listener); },
+    ready(id) { const row = entry(id); return row.pending ?? Promise.resolve(); },
+    save(id, text) {
+      const row = entry(id);
+      if (['loading', 'readError', 'retrying', 'conflict'].includes(row.state.status)) return;
+      row.state = { text, status: 'saving' };
+      row.generation++;
+      row.dirty = true;
+      emit(row);
+      if (!row.pending) row.pending = drain(id, row);
     },
+    retry(id) {
+      const row = entry(id);
+      if (row.pending) return row.pending;
+      if (row.state.status === 'conflict') return Promise.resolve();
+      const reading = row.state.status === 'readError';
+      set(row, 'retrying');
+      row.pending = Promise.resolve().then(() => reading ? load(id, row) : drain(id, row));
+      return row.pending;
+    },
+    // Conflicts require an explicit reload; never silently replace a newer note.
+    reload(id) {
+      const row = entry(id);
+      if (row.pending) return row.pending;
+      row.dirty = false;
+      set(row, 'loading');
+      row.pending = load(id, row);
+      return row.pending;
+    },
+    hasUnsaved() { return [...entries.values()].some(row => row.dirty); },
     dispose() {
-      for (const retry of pendingRetries.values()) { clearTimeout(retry.timer); retry.resolve(); }
-      pendingRetries.clear();
+      disposed = true;
+      // Already queued saves continue so closing a sidebar does not discard edits.
       for (const row of entries.values()) row.listeners.clear();
       entries.clear();
     },
   };
+  return store;
 }
 
-// Shared state-to-control semantics, testable without a DOM or renderer.
 export function noteEditorState(state) {
-  const failure = state.status === 'readError' || state.status === 'saveError';
-  const retrying = state.status === 'retrying';
+  const failure = ['readError', 'saveError', 'conflict'].includes(state.status);
   return {
     failure,
-    readOnly: state.status === 'readError' || retrying,
-    retryVisible: failure || retrying,
-    retryDisabled: retrying,
+    readOnly: ['loading', 'readError', 'retrying', 'conflict'].includes(state.status),
+    retryVisible: ['readError', 'saveError', 'retrying'].includes(state.status),
+    retryDisabled: state.status === 'retrying',
   };
+}
+
+// Read values only inside this plugin's old namespace. Keep the originals as a backup.
+export async function migrateLegacyNotes(getStorage, prefix, api) {
+  let storage;
+  try { storage = getStorage(); } catch { return { status: 'unavailable', count: 0 }; }
+  const notes = [];
+  try {
+    for (let i = 0; i < storage.length; i++) {
+      const key = storage.key(i);
+      if (!key?.startsWith(prefix)) continue;
+      const id = decodeURIComponent(key.slice(prefix.length));
+      const text = storage.getItem(key);
+      if (text !== null) notes.push([id, text]);
+    }
+  } catch { throw new Error('Cannot read existing browser notes'); }
+  let count = 0;
+  const failedIds = [];
+  for (const [id, text] of notes) {
+    try { await api.importLegacy(id, text); count++; }
+    catch { failedIds.push(id); }
+  }
+  if (failedIds.length) throw Object.assign(new Error('Some browser notes could not be migrated'), { failedIds, count });
+  return { status: 'done', count };
 }

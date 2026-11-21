@@ -12,13 +12,14 @@ for (const op of patch) {
     if (!row.id.startsWith(pkg.name + ':') || !(row.name === pkg.name || row.name.startsWith(pkg.name + '/'))) throw Error('Out-of-package row');
   }
 }
-const store = (await readFile(new URL('src/notes-store.js', root), 'utf8')).replaceAll('export function ', 'function ');
-const client = (await readFile(new URL('src/client.js', root), 'utf8')).replace("import { createNotesStore, noteEditorState } from './notes-store.js';", '');
+const store = (await readFile(new URL('src/notes-store.js', root), 'utf8')).replaceAll('export function ', 'function ').replaceAll('export async function ', 'async function ');
+const client = (await readFile(new URL('src/client.js', root), 'utf8')).replace("import { createNotesStore, noteEditorState, migrateLegacyNotes } from './notes-store.js';", '');
 const output = '// Built, standalone DSH client artifact.\n(() => {\n' + store + '\n' + client + '\n})();\n';
 new Script(output, { filename: 'dist/client.js' });
 await mkdir(new URL('dist/', root), { recursive: true });
 await writeFile(new URL('dist/client.js', root), output);
-await writeFile(new URL('dist/index.js', root), 'export function apply() {}\n');
+await writeFile(new URL('dist/index.js', root), await readFile(new URL('src/host.js', root), 'utf8'));
+await writeFile(new URL('dist/disk-store.js', root), await readFile(new URL('src/disk-store.js', root), 'utf8'));
 for (const locale of ['zh','en']) {
   const json = JSON.parse(await readFile(new URL('locale/' + locale + '.json', root), 'utf8'));
   if (!json.meta?.title || !json.meta?.description) throw Error('Missing localized metadata');
