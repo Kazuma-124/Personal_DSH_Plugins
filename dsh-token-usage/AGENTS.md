@@ -9,7 +9,7 @@
 - 构成：host 插件（Node，注册 HTTP 路由）+ 浏览器模块（侧栏入口，iframe 嵌页面）+ 单文件静态页面。
 - 无 npm 依赖、无构建步骤；Node 24+（用 DSH 自带运行时）。
 
-## 2. 文件地图（全部源码只有 7 个文件）
+## 2. 文件地图（源码 7 个文件，另有 locale/ 与 icon.svg）
 
 | 文件 | 行数 | 作用 | 改动风险 |
 |:--|--:|:--|:--|
@@ -18,7 +18,7 @@
 | `dashboard.html` | 93 | 页面 + 全部 CSS/JS（**超长行**） | 低，但读取要小心 |
 | `client.js` | 9 | `window.__ModuleLoader__` 注册侧栏入口与 iframe 面板 | 低 |
 | `cordis.yml` | 3 | 以包名安装时的 insert 片段 | 低 |
-| `package.json` | 36 | `dsh.client` / `dsh.bundle` 声明 | 中，改错加载不了 |
+| `package.json` | 72 | `dsh.client` / `dsh.bundle` / `engines.dsh` / 发布字段声明 | 中，改错加载不了 |
 | `collector.test.mjs` + `host.test.mjs` | 99 + 44 | 回归测试 | — |
 
 `verification/` 只是本地验收产物（截图、Edge profile），**不参与运行，也不进转发包**。
@@ -80,8 +80,8 @@ Edge 已知坑（踩过就别再踩）：
 
 ## 8. 分发与打包
 
-打包只含 7 个源码文件 + `AGENTS.md` + 2 个测试：`index.mjs collector.mjs client.js dashboard.html cordis.yml package.json README.md AGENTS.md collector.test.mjs host.test.mjs`（共 10 个文件）。
+npm 发布产物共 10 个文件：`index.mjs`、`collector.mjs`、`client.js`、`dashboard.html`、`cordis.yml`、`package.json`、`README.md`、`locale/en.json`、`locale/zh.json`、`icon.svg`（`files` 未包含 `AGENTS.md` 与测试）。`locale/*.json` 提供插件页面的中英文标题与说明，`icon.svg` 是包内 `./icon` 导出的原创图标；两者都必须在 `files` 里。
 
 - **排除 `verification/`**（Edge profile 可能上百 MB）。
 - 对方启用：复制到其 profile 的 `created-plugins/dsh-token-usage`，再在 `cordis.patch.yml` 末尾加 `insert`，`name` 写 `file:///<该目录>/index.mjs`（正斜杠；路径含空格或中文时先挪到简单路径）。
-- 若按包名安装，`cordis.yml` 里的 `name: dsh-token-usage` 才生效，且包必须能被 profile 的模块解析到，一般不如 file URL 省事。
+- 若按包名安装，`cordis.yml` 里的 `name` 必须等于包名（当前 `@kazuma-124/dsh-token-usage`）；`client.js` 里 `__ModuleLoader__.load({ id })` 的 id 也必须等于包名，否则浏览器模块加载失败。改包名要同时改这两处。

@@ -1,15 +1,51 @@
 {
-  "name": "dsh-token-usage",
+  "name": "@kazuma-124/dsh-token-usage",
   "version": "1.0.0",
   "type": "module",
-  "description": "按对话和项目层级统计 token 消耗及时间趋势；无模型调用",
+  "description": "Token usage statistics for DeepSeek Harness: per-conversation and per-project totals with a trend chart, read from local session logs without calling a model.",
   "main": "index.mjs",
-  "files": ["index.mjs", "collector.mjs", "client.js", "dashboard.html", "cordis.yml", "README.md", "AGENTS.md", "*.test.mjs"],
+  "files": [
+    "index.mjs",
+    "collector.mjs",
+    "client.js",
+    "dashboard.html",
+    "cordis.yml",
+    "locale/*.json",
+    "icon.svg",
+    "README.md"
+  ],
   "exports": {
     ".": "./index.mjs",
     "./client": "./client.js",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg",
     "./package.json": "./package.json"
   },
+  "engines": {
+    "dsh": ">=0.2.0-0 <0.3.0",
+    "node": ">=24"
+  },
+  "author": "Kazuma-124",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kazuma-124/Personal_DSH_Plugins.git",
+    "directory": "dsh-token-usage"
+  },
+  "homepage": "https://github.com/Kazuma-124/Personal_DSH_Plugins/tree/main/dsh-token-usage#readme",
+  "bugs": {
+    "url": "https://github.com/Kazuma-124/Personal_DSH_Plugins/issues"
+  },
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis",
+    "token",
+    "usage",
+    "statistics",
+    "dashboard"
+  ],
   "dsh": {
     "client": {
       "platform": "web",

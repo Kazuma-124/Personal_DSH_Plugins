@@ -1,0 +1,6 @@
+url: https://github.com/Kazuma-124/Personal_DSH_Plugins/tree/main/dsh-token-usage
+name: Kazuma-124/Personal_DSH_Plugins#dsh-token-usage
+category: usage
+description:
+  en: 'Reads local DSH session logs and shows token usage per conversation and per project with a trend chart; read-only, no model calls.'
+  zh: '只读本机会话日志，按对话与项目汇总 token 用量并显示趋势图；不调用模型。'

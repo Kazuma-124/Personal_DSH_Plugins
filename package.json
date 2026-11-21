@@ -1,0 +1,34 @@
+{
+  "name": "personal-dsh-plugins",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Development repository for Kazuma-124's DeepSeek Harness plugins and their plugin market index.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kazuma-124/Personal_DSH_Plugins.git"
+  },
+  "homepage": "https://github.com/Kazuma-124/Personal_DSH_Plugins#readme",
+  "bugs": {
+    "url": "https://github.com/Kazuma-124/Personal_DSH_Plugins/issues"
+  },
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis",
+    "plugin-market"
+  ],
+  "scripts": {
+    "index": "node scripts/build-index.mjs",
+    "index:check": "node scripts/build-index.mjs --check",
+    "test": "node --test dsh-token-usage/*.test.mjs conversation-notebook/tests/*.test.mjs"
+  },
+  "devDependencies": {
+    "@deepseek-ai/dsh-plugin-market-index": "0.2.2-rc.5"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

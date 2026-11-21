@@ -1,0 +1,6 @@
+url: https://github.com/Kazuma-124/Personal_DSH_Plugins/tree/main/conversation-notebook
+name: Kazuma-124/Personal_DSH_Plugins#conversation-notebook
+category: ui
+description:
+  en: 'A per-conversation plain-text notebook in the right sidebar; notes save to the DSH host disk through authenticated routes, with no model calls.'
+  zh: '在对话右侧栏为每个对话提供一份独立纯文本笔记，经已认证路由保存到本机磁盘；不调用模型。'

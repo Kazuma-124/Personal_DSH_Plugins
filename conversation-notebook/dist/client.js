@@ -124,11 +124,11 @@ async function migrateLegacyNotes(getStorage, prefix, api) {
 
 
 window.__ModuleLoader__.load({
-  id: '@dsh-local/view-e1727a2d-8dfb-4483-8fd4-2a5078b2229e',
+  id: '@kazuma-124/dsh-conversation-notebook',
   factory(require) {
     const React = require('react');
     const h = React.createElement;
-    const ID = '@dsh-local/view-e1727a2d-8dfb-4483-8fd4-2a5078b2229e:notebook';
+    const ID = '@kazuma-124/dsh-conversation-notebook:notebook';
     const NS = 'conversationNotebookE1727a2d';
     const dictionaries = {
       zh: {

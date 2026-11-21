@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Token usage",
+    "description": "Adds a Token usage entry to the left sidebar: totals, a per-project table and a trend chart, computed from local session logs without calling a model. The global total counts each consumption event once; parent and child project rows must not be added together. Read-only, loopback only, no write API."
+  }
+}

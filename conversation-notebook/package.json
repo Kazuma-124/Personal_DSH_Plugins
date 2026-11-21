@@ -1,23 +1,61 @@
 {
-  "name": "@dsh-local/view-e1727a2d-8dfb-4483-8fd4-2a5078b2229e",
+  "name": "@kazuma-124/dsh-conversation-notebook",
   "version": "1.0.0",
-  "private": true,
   "type": "module",
-  "description": "A manually edited, persistent notebook for each conversation in the right sidebar.",
+  "description": "A per-conversation plain-text notebook in the right sidebar of DeepSeek Harness, saved to the DSH host's disk without calling a model.",
   "exports": {
     ".": "./dist/index.js",
     "./client": "./dist/client.js",
     "./locale/*.json": "./locale/*.json",
     "./icon": "./icon.svg"
   },
-  "files": ["dist", "cordis.patch.yml", "locale", "icon.svg", "README.md"],
-  "scripts": { "build": "node build.mjs", "test": "node --test tests/*.test.mjs" },
+  "files": [
+    "dist",
+    "cordis.patch.yml",
+    "locale",
+    "icon.svg",
+    "README.md"
+  ],
+  "engines": {
+    "dsh": ">=0.2.0-0 <0.3.0",
+    "node": ">=24"
+  },
+  "author": "Kazuma-124",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kazuma-124/Personal_DSH_Plugins.git",
+    "directory": "conversation-notebook"
+  },
+  "homepage": "https://github.com/Kazuma-124/Personal_DSH_Plugins/tree/main/conversation-notebook#readme",
+  "bugs": {
+    "url": "https://github.com/Kazuma-124/Personal_DSH_Plugins/issues"
+  },
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis",
+    "notebook",
+    "notes",
+    "sidebar"
+  ],
   "dsh": {
-    "bundle": { "patch": "./cordis.patch.yml" },
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
     "client": {
       "platform": "web",
       "immediately": true,
-      "inject": ["@deepseek-ai/dsh-client-ui-sidebar-right", "@deepseek-ai/dsh-client-locale"]
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-sidebar-right",
+        "@deepseek-ai/dsh-client-locale"
+      ]
     }
+  },
+  "scripts": {
+    "build": "node build.mjs",
+    "prepack": "node build.mjs",
+    "test": "node --test tests/*.test.mjs"
   }
 }

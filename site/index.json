@@ -1,0 +1,118 @@
+{
+  "format": 1,
+  "title": {
+    "en": "Kazuma's DSH plugins",
+    "zh": "Kazuma 的 DSH 插件"
+  },
+  "description": {
+    "en": "Bundles for DeepSeek Harness: token usage statistics and a per-conversation notebook. Read-only, no model calls.",
+    "zh": "DeepSeek Harness 组合包：Token 用量统计与对话记事本。只读、不调用模型。"
+  },
+  "metadata": {
+    "categories": {
+      "usage": {
+        "title": {
+          "en": "Usage statistics",
+          "zh": "用量统计"
+        }
+      },
+      "ui": {
+        "title": {
+          "en": "Interface",
+          "zh": "界面"
+        }
+      }
+    },
+    "labels": {},
+    "sortKeys": {}
+  },
+  "plugins": [
+    {
+      "name": "@kazuma-124/dsh-token-usage",
+      "title": {
+        "en": "Token usage",
+        "zh": "Token 用量统计"
+      },
+      "description": {
+        "en": "Adds a Token usage entry to the left sidebar: totals, a per-project table and a trend chart, computed from local session logs without calling a model. The global total counts each consumption event once; parent and child project rows must not be added together. Read-only, loopback only, no write API.",
+        "zh": "在左侧栏新增“Token 用量”入口：按对话、项目汇总 token 用量并显示趋势图，全部来自本机会话日志，不调用模型。全局总量只对原始消费事件汇总一次，父子项目的汇总行不能相加。只读、仅回环地址访问、无写入接口。"
+      },
+      "icon": "icons/dsh-token-usage.svg",
+      "author": "Kazuma-124",
+      "homepage": "https://github.com/Kazuma-124/Personal_DSH_Plugins/tree/main/dsh-token-usage",
+      "repository": {
+        "url": "https://github.com/Kazuma-124/Personal_DSH_Plugins",
+        "directory": "dsh-token-usage"
+      },
+      "metadata": {
+        "category": "usage",
+        "keywords": [
+          "dsh",
+          "dsh-plugin",
+          "deepseek-harness",
+          "cordis",
+          "token",
+          "usage",
+          "statistics",
+          "dashboard"
+        ],
+        "labels": []
+      },
+      "versions": [
+        {
+          "version": "1.0.0",
+          "publishTimestamp": 1795148237,
+          "source": {
+            "type": "npm"
+          },
+          "engines": {
+            "dsh": ">=0.2.0-0 <0.3.0"
+          }
+        }
+      ]
+    },
+    {
+      "name": "@kazuma-124/dsh-conversation-notebook",
+      "title": {
+        "en": "Conversation notebook",
+        "zh": "对话记事本"
+      },
+      "description": {
+        "en": "Choose Conversation notebook from the right sidebar guide to manually edit a separate note for each conversation. Changes save to this device’s disk. Archiving, restarting or clearing browser data does not delete saved notes. Old browser notes migrate automatically after upgrading; keep browser data until migration completes. Save failures retain drafts and concurrent updates report conflicts.",
+        "zh": "在右侧栏入口页选择“对话记事本”，手动维护当前对话的独立笔记。输入后自动保存到本机磁盘，归档、重启或清除浏览器数据不会删除已保存的笔记。升级后自动迁移旧浏览器笔记；迁移完成前请保留旧浏览器数据。保存失败保留草稿，多窗口更新会提示冲突。"
+      },
+      "icon": "icons/conversation-notebook.svg",
+      "author": "Kazuma-124",
+      "homepage": "https://github.com/Kazuma-124/Personal_DSH_Plugins/tree/main/conversation-notebook",
+      "repository": {
+        "url": "https://github.com/Kazuma-124/Personal_DSH_Plugins",
+        "directory": "conversation-notebook"
+      },
+      "metadata": {
+        "category": "ui",
+        "keywords": [
+          "dsh",
+          "dsh-plugin",
+          "deepseek-harness",
+          "cordis",
+          "notebook",
+          "notes",
+          "sidebar"
+        ],
+        "labels": []
+      },
+      "versions": [
+        {
+          "version": "1.0.0",
+          "publishTimestamp": 1795233407,
+          "source": {
+            "type": "npm"
+          },
+          "engines": {
+            "dsh": ">=0.2.0-0 <0.3.0"
+          }
+        }
+      ]
+    }
+  ]
+}
