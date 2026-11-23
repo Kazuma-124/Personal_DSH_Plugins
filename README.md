@@ -166,7 +166,7 @@ node --test workspace-session-migration/tests/*.test.mjs # 会话迁移
 
 ```powershell
 npm install                              # 只装索引校验器（开发依赖，不用于分发）
-node scripts/build-index.mjs             # 提交后运行：把 HEAD 固定进 docs/index.json
+node scripts/build-index.mjs             # 提交后运行：固定每个插件最后一次变更的 commit
 node scripts/build-index.mjs --check     # 只验证 docs/index.json 是否最新
 ```
 

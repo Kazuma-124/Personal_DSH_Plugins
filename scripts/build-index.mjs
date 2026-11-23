@@ -72,12 +72,15 @@ async function readJson(file) {
   return JSON.parse(await readFile(file, 'utf8'));
 }
 
-/** The repository's current commit. */
-function gitHead() {
+/** The commit that last changed a plugin directory: the code this version carries. */
+function gitDirectoryCommit(dir) {
   try {
-    return execFileSync('git', ['rev-parse', 'HEAD'], { cwd: REPO_ROOT, encoding: 'utf8' }).trim();
+    const commit = execFileSync('git', ['log', '-1', '--format=%H', '--', dir], {
+      cwd: REPO_ROOT, encoding: 'utf8',
+    }).trim();
+    return commit === '' ? undefined : commit;
   } catch {
-    fail('this script needs a git checkout to read HEAD from');
+    return undefined;
   }
 }
 
@@ -98,6 +101,13 @@ function commitTimestamp(dir) {
   const seconds = gitDirectoryTime(dir);
   if (seconds === undefined) fail(`${dir} has no commit time; commit the package first`);
   return seconds;
+}
+
+/** The commit pinned for the current version of one plugin. */
+function pluginCommit(dir) {
+  const commit = gitDirectoryCommit(dir);
+  if (commit === undefined) fail(`${dir} has no commit; commit the package first`);
+  return commit;
 }
 
 /** Localized display text for one package, from its locale files. */
@@ -148,7 +158,7 @@ async function pluginEntry({ dir, category }, published) {
   const current = {
     version: pkg.version,
     publishTimestamp: commitTimestamp(dir),
-    source: { type: 'git', url: REPOSITORY_URL, commit: gitHead(), path: dir },
+    source: { type: 'git', url: REPOSITORY_URL, commit: pluginCommit(dir), path: dir },
     engines: { dsh: pkg.engines.dsh },
   };
   // Keep earlier versions so users can see what changed, install an older build,

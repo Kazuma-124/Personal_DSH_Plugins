@@ -54,7 +54,7 @@ node scripts/build-index.mjs --check              # 只验证是否最新
 4. `node scripts/build-index.mjs`（脚本会拒绝在插件目录有未提交改动或版本未升时生成）。
 5. 再提交 `docs/index.json` 并 push。索引走 `https://cdn.jsdelivr.net/gh/Kazuma-124/Personal_DSH_Plugins@main/docs/index.json`，jsDelivr 对 `@main` 有缓存，推送后可能需要几分钟才生效。
 
-提交 `docs/index.json` 之后 index 里固定的 commit 会落后一个提交，这是正常的：那个 commit 里已经包含它所描述的插件代码。
+索引固定的是**最后一次修改该插件目录的 commit**，不是索引提交本身；提交 `docs/index.json` 之后 pin 会落后于 HEAD，这是正常的：那个 commit 里已经包含它所描述的插件代码。
 
 ## 6. 索引的硬约束（改格式前先读）
 
