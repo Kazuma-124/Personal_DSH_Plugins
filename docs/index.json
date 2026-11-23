@@ -194,12 +194,12 @@
     {
       "name": "@kazuma-124/dsh-plugin-actions",
       "title": {
-        "en": "Plugin actions",
-        "zh": "插件操作"
+        "en": "Plugin actions and unread marks",
+        "zh": "插件操作与未读标记"
       },
       "description": {
-        "en": "Adds an \"Open containing folder\" action to every plugin page, revealing the plugin directory in this host's file manager.",
-        "zh": "在每个插件页面提供一个「打开所在文件夹」动作，直接在本机文件管理器中定位插件目录。"
+        "en": "Open a plugin's folder from its detail page, and mark a session as unread so the session list keeps the reminder until that session is opened again.",
+        "zh": "在插件详情页直接打开插件所在文件夹，并把会话标为未读，让侧栏保留提醒直到再次打开该会话。"
       },
       "icon": "icons/dsh-plugin-actions.svg",
       "author": "Kazuma-124",
@@ -216,11 +216,26 @@
           "deepseek-harness",
           "cordis",
           "plugin-manager",
-          "file-manager"
+          "file-manager",
+          "session-list",
+          "unread"
         ],
         "labels": []
       },
       "versions": [
+        {
+          "version": "1.1.0",
+          "publishTimestamp": 1795430902,
+          "source": {
+            "type": "git",
+            "url": "https://github.com/Kazuma-124/Personal_DSH_Plugins",
+            "commit": "b7f349c8511e5517c26b82a8d4f0555b0d369694",
+            "path": "dsh-plugin-actions"
+          },
+          "engines": {
+            "dsh": ">=0.2.0-0 <0.3.0"
+          }
+        },
         {
           "version": "1.0.1",
           "publishTimestamp": 1795420186,
