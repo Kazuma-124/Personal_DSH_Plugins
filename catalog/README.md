@@ -1,6 +1,6 @@
 # Catalog submissions
 
-这两个文件是提交给 [awesome-dsh-plugin](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin) 的条目草稿。该目录是 dsh-market（插件市场插件，月下载百万级）、[dshmarket.com](https://dshmarket.com) 和 [awesome-dsh-plugin.com](https://awesome-dsh-plugin.com) 的数据源，并发布成一份 format-1 索引。
+这里的 `*.yml` 是提交给 [awesome-dsh-plugin](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin) 的条目草稿。该目录是 dsh-market（插件市场插件，月下载百万级）、[dshmarket.com](https://dshmarket.com) 和 [awesome-dsh-plugin.com](https://awesome-dsh-plugin.com) 的数据源，并发布成一份 format-1 索引。
 
 本仓库通过 GitHub 仓库分发，条目支持 GitHub-only 来源（dsh-market 会从仓库源码或 Release tarball 安装），不要求包已上架包注册表。
 
@@ -8,14 +8,14 @@
 
 1. Fork `awesome-dsh-plugin/awesome-dsh-plugin`。
 2. 把这里的每个 `*.yml` **按原文件名**复制到上游的 `data/plugins/` 下（文件名规则 `owner__repo--subdir.yml`，monorepo 子包就是这种形态）。
-3. 一个 PR 最多 3 条；monorepo 的多子包正是这个额度存在的原因，所以两个插件可以放同一个 PR。
+3. 一个 PR 最多 3 条；monorepo 的多子包正是这个额度存在的原因，同一仓库的条目可以放同一个 PR。
 4. 不要手工改 README：上游的 README 由 `data/plugins/*.yml` 生成。
 
 ## 上游的硬门槛（逐条对过）
 
 | 要求 | 本仓库状态 |
 |:--|:--|
-| `package.json` 声明 `dsh.bundle`（只声明 `dsh.client` 不算可安装） | ✅ 两个子包都声明 |
+| `package.json` 声明 `dsh.bundle`（只声明 `dsh.client` 不算可安装） | ✅ 已收录的子包都声明 |
 | 仓库有真实可用代码 | ✅ |
 | 仓库创建满 1 天 | ⏳ 建于 2026-11-20，2026-11-21 之后达标 |
 | 仓库带 `dsh-plugin` topic | ⏳ 尚未设置，需要在 GitHub 仓库设置里加 |
