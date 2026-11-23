@@ -54,9 +54,9 @@ dsh plugin --profile <profile> add ./Personal_DSH_Plugins/workspace-session-migr
 
 按目录 / 本地路径安装使用本地 link，不执行任何构建脚本，也不需要放行 `allowBuilds`。注意 `conversation-notebook` 的 `dist/` 已经在仓库里构建好；改 `src/` 之后要自己跑一次 `node build.mjs`。
 
-### 方式三：复制到 profile 的插件目录（仓库开发者自用）
+### 方式三：从发布快照安装到本机 profile
 
-`scripts/deploy.mjs` 把插件复制到当前 profile 的默认插件目录 `<profile>/created-plugins`，复制目标目录名保持不变（`dsh-token-usage`、`e1727a2d-8dfb-4483-8fd4-2a5078b2229e`、`dsh-plugin-actions`、`workspace-session-migration`），因此改包名不影响本机已安装的条目。插件互相独立，只更新一个时用 `--only`，不会碰另一个插件的已部署副本：
+`scripts/deploy.mjs` 把插件复制到当前 profile 的默认插件目录 `<profile>/created-plugins`，复制目标目录名保持不变（`dsh-token-usage`、`e1727a2d-8dfb-4483-8fd4-2a5078b2229e`、`dsh-plugin-actions`、`workspace-session-migration`），因此改包名不影响本机已安装的条目。它安装的是仓库快照；本机日常修改应发生在复制后的目录，再提取回仓库并升版本。插件互相独立，只更新一个时用 `--only`，不会碰另一个插件的已部署副本：
 
 ```powershell
 node scripts/deploy.mjs --only dsh-token-usage            # 只更新 Token 用量
