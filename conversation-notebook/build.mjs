@@ -3,7 +3,7 @@ import { Script } from 'node:vm';
 const root = new URL('./', import.meta.url);
 const pkg = JSON.parse(await readFile(new URL('package.json', root), 'utf8'));
 const patch = JSON.parse(await readFile(new URL('cordis.patch.yml', root), 'utf8'));
-if (pkg.name !== '@kazuma-124/dsh-conversation-notebook' || pkg.version !== '1.0.0') throw Error('Invalid reserved package identity');
+if (pkg.name !== '@kazuma-124/dsh-conversation-notebook') throw Error('Invalid package identity');
 if (pkg.dsh.bundle.patch !== './cordis.patch.yml') throw Error('Invalid patch export');
 if (!Array.isArray(patch)) throw Error('Patch must be an array');
 for (const op of patch) {

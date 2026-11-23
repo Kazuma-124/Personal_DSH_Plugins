@@ -20,7 +20,7 @@
 
 `engines.dsh` 为 `>=0.2.0-0 <0.3.0`：面向 DSH 0.2 系列（含其预发布版本），实测于 0.2.2-rc.5 桌面版。依赖 `sidebar.right.pane.tab` 槽位与已认证的 Connection 路由；DSH 0.3 需要先实测再放宽。
 
-当前版本 `1.0.1`，各版本变化见 [CHANGELOG.md](CHANGELOG.md)。
+当前版本 `1.0.2`，各版本变化见 [CHANGELOG.md](CHANGELOG.md)。
 
 ## 保存位置与备份
 

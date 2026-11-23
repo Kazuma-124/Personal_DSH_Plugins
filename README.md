@@ -101,7 +101,7 @@ node scripts/deploy.mjs --all                             # 批量部署必须�
 | 插件 | 版本 | `engines.dsh` | 实测环境 |
 |:--|:--|:--|:--|
 | dsh-token-usage | 1.0.1 | `>=0.2.0-0 <0.3.0` | DSH 0.2.2-rc.5（Desktop） |
-| conversation-notebook | 1.0.1 | `>=0.2.0-0 <0.3.0` | DSH 0.2.2-rc.5（Desktop） |
+| conversation-notebook | 1.0.2 | `>=0.2.0-0 <0.3.0` | DSH 0.2.2-rc.5（Desktop） |
 | dsh-plugin-actions | 1.0.0 | `>=0.2.0-0 <0.3.0` | DSH 0.2.2-rc.5（Desktop） |
 | workspace-session-migration | 1.0.0 | `>=0.2.2-rc.5 <0.3.0` | DSH 0.2.2-rc.5（Desktop） |
 
