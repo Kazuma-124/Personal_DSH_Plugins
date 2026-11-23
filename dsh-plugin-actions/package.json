@@ -1,8 +1,8 @@
 {
   "name": "@kazuma-124/dsh-plugin-actions",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "type": "module",
-  "description": "Adds an \"Open containing folder\" action to every plugin page in the DSH plugin manager.",
+  "description": "Small DSH interface additions: open a plugin's folder from the Plugins manager, and mark a session as unread until it is opened again.",
   "exports": {
     ".": "./index.js",
     "./client": "./client.js",
@@ -31,7 +31,9 @@
     "deepseek-harness",
     "cordis",
     "plugin-manager",
-    "file-manager"
+    "file-manager",
+    "session-list",
+    "unread"
   ],
   "dsh": {
     "bundle": {
@@ -47,7 +49,10 @@
       "immediately": true,
       "inject": [
         "@deepseek-ai/dsh-client-ui-plugin-manager",
-        "@deepseek-ai/dsh-client-locale"
+        "@deepseek-ai/dsh-client-locale",
+        "@deepseek-ai/dsh-api-session-controller",
+        "@deepseek-ai/dsh-client-ui-context-menu",
+        "@deepseek-ai/dsh-client-ui-workspace"
       ]
     }
   },
