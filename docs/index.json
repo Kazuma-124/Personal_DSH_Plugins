@@ -66,6 +66,19 @@
       },
       "versions": [
         {
+          "version": "1.0.2",
+          "publishTimestamp": 1795420186,
+          "source": {
+            "type": "git",
+            "url": "https://github.com/Kazuma-124/Personal_DSH_Plugins",
+            "commit": "04899c7fb4ee5c1db0f43ec33fbe0b93c920ceff",
+            "path": "dsh-token-usage"
+          },
+          "engines": {
+            "dsh": ">=0.2.0-0 <0.3.0"
+          }
+        },
+        {
           "version": "1.0.1",
           "publishTimestamp": 1795419434,
           "source": {
@@ -124,6 +137,19 @@
         "labels": []
       },
       "versions": [
+        {
+          "version": "1.0.3",
+          "publishTimestamp": 1795420186,
+          "source": {
+            "type": "git",
+            "url": "https://github.com/Kazuma-124/Personal_DSH_Plugins",
+            "commit": "04899c7fb4ee5c1db0f43ec33fbe0b93c920ceff",
+            "path": "conversation-notebook"
+          },
+          "engines": {
+            "dsh": ">=0.2.0-0 <0.3.0"
+          }
+        },
         {
           "version": "1.0.2",
           "publishTimestamp": 1795419571,
@@ -196,6 +222,19 @@
       },
       "versions": [
         {
+          "version": "1.0.1",
+          "publishTimestamp": 1795420186,
+          "source": {
+            "type": "git",
+            "url": "https://github.com/Kazuma-124/Personal_DSH_Plugins",
+            "commit": "04899c7fb4ee5c1db0f43ec33fbe0b93c920ceff",
+            "path": "dsh-plugin-actions"
+          },
+          "engines": {
+            "dsh": ">=0.2.0-0 <0.3.0"
+          }
+        },
+        {
           "version": "1.0.0",
           "publishTimestamp": 1795419434,
           "source": {
@@ -241,6 +280,19 @@
         "labels": []
       },
       "versions": [
+        {
+          "version": "1.0.1",
+          "publishTimestamp": 1795420186,
+          "source": {
+            "type": "git",
+            "url": "https://github.com/Kazuma-124/Personal_DSH_Plugins",
+            "commit": "04899c7fb4ee5c1db0f43ec33fbe0b93c920ceff",
+            "path": "workspace-session-migration"
+          },
+          "engines": {
+            "dsh": ">=0.2.2-rc.5 <0.3.0"
+          }
+        },
         {
           "version": "1.0.0",
           "publishTimestamp": 1795419434,
