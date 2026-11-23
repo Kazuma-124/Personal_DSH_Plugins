@@ -48,7 +48,7 @@ node scripts/build-index.mjs --check              # 只验证是否最新
 
 分发 = 克隆仓库按目录安装，索引固定本仓库的 commit。
 
-1. 改包，按第 8 节升版本并更新该插件的 `CHANGELOG.md`，跑对应测试，必要时 `node build.mjs`。新插件或从本机迁入的插件先按第 7 节处理。
+1. 把本机自用副本的改动提取到仓库；按第 8 节升版本并更新该插件的 `CHANGELOG.md`，跑对应测试，必要时 `node build.mjs`。新插件或首次迁入的插件先按第 7 节处理。
 2. 跑 `node scripts/version.mjs check`，确认版本高于已发布版本且变更记录存在。
 3. **提交插件目录**——索引固定的是 commit，未提交的改动意味着索引描述的不是它指向的代码。
 4. `node scripts/build-index.mjs`（脚本会拒绝在插件目录有未提交改动或版本未升时生成）。
@@ -136,5 +136,5 @@ DSH 的索引是 **format 1** 的单个 JSON，用 `parseMarketIndex` 校验：
   ```
 
   `check` 会拒绝「目录内容变了但版本没升」「版本低于已发布版本」「当前版本没有 CHANGELOG 条目」三种情况；`build-index.mjs` 写索引前会再跑一次同样的检查。
-- 发布顺序：改代码 → 升版本并写 CHANGELOG → 跑测试 → 提交插件目录 → `node scripts/build-index.mjs` → 提交索引。顺序反过来会让索引指向没有该版本的 commit。
+- 发布顺序：本机改代码 → 提取到仓库 → 升版本并写 CHANGELOG → 跑测试 → 提交插件目录 → `node scripts/build-index.mjs` → 提交索引。顺序反过来会让索引指向没有该版本的 commit。
 - 本机自用副本是日常修改的地方，仓库是发布快照。提取时先比较两侧内容，在仓库副本上升版本并写 CHANGELOG；需要两边版本号对齐时，把新版本号同步回本机副本。`deploy.mjs` 复制到 `created-plugins/` 的副本、profile 的 `link:` 目标和 `plugin-backups/` 都不是版本源。
