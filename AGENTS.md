@@ -78,7 +78,8 @@ DSH 的索引是 **format 1** 的单个 JSON，用 `parseMarketIndex` 校验：
 - **安装**：profile 里已装同名包 → 原地更新，不换目录名、不产生第二个副本；换源时确认旧 `link:` 被替换，不残留指向旧目录的条目；未装 → 作为新包安装，由 DSH 写 profile 的 `package.json` 和 bundle 选择。
 - 覆盖前确认目标目录确实属于这个插件；`scripts/deploy.mjs` 对目标目录先 `rm -rf`，没有自动备份。profile 的 `plugin-backups/` 是 DSH 自己的产物，不能依赖它兜底。
 - 需要保留旧版或并行安装时，把新副本放到独立目录并使用不同包名；不要覆盖现有安装。
-- 迁入后**仓库是唯一源**，不要再直接改本机副本；`deploy.mjs` 部署到 `created-plugins/` 的副本是生成物，不要反过来当源。任一侧临时改过，都要回灌另一侧并重新验证。
+- 本机自用副本与仓库是两份源：本机副本是日常运行与修改的地方，仓库是发布快照。迁入只把内容复制进仓库，不改变本机安装，也不要把 profile 的 `link:` 指向仓库目录。
+- 本机更新后，把差异提取到仓库并在仓库副本上升版本；需要重置本机副本时用发布快照，先确认本机没有尚未提取的改动。`deploy.mjs` 复制到 `created-plugins/` 的是本机副本，不是版本源。
 
 ### 7.2 找到本机正在用的插件
 
@@ -112,8 +113,8 @@ DSH 的索引是 **format 1** 的单个 JSON，用 `parseMarketIndex` 校验：
 
 1. 先跑对应测试，必要时 `node build.mjs`；确认当前 DSH 版本满足 `engines.dsh`。
 2. 选安装方式：
-   - **新装 / 换源**：`plugin_manager` 的 `install_bundle`（target 为仓库目录的绝对路径），或 UI 的「插件 → 添加插件」，或 `dsh plugin --profile <profile> add <目录>`。由 DSH 写 profile 的 `package.json` / `cordis.patch.yml`；不要手改这两份文件，也不要在 profile 里运行包管理器。需要执行的 build 脚本只在用户明确同意后放行。
-   - **更新已装插件**：只有该插件已在 `scripts/deploy.mjs` 且 profile 用的是其中固定的目录名时，才用 `node scripts/deploy.mjs --only <插件目录>`；它只覆盖文件，不负责注册。若 profile 是直接 link 到仓库目录，改仓库文件即可，但同样要重载或重启。
+   - **新装 / 换源**：`plugin_manager` 的 `install_bundle`（target 为本机插件目录的绝对路径，不要指向分享仓库），或 UI 的「插件 → 添加插件」，或 `dsh plugin --profile <profile> add <目录>`。由 DSH 写 profile 的 `package.json` / `cordis.patch.yml`；不要手改这两份文件，也不要在 profile 里运行包管理器。需要执行的 build 脚本只在用户明确同意后放行。
+   - **更新已装插件**：本机副本在自己的目录（`created-plugins/` 或独立工作目录），直接改该副本；本机更新后再提取到仓库。只有该插件在 `scripts/deploy.mjs` 且 profile 用其中固定的目录名时，才用 `node scripts/deploy.mjs --only <插件目录>` 从发布快照重置本机副本；先确认本机没有未提取的改动。
 3. 只改一个插件时用 `--only`；批量部署必须显式 `--all`，不带参数会直接拒绝，避免误覆盖其他插件。
 4. 覆盖已安装包后要重启 DSH 才会加载新的 Host/Client 模块；只改静态页面或文案可以刷新。以 `plugin_manager` 返回的 `application` 和新的会话/页面实测为准，不要凭日志或进程列表宣布生效。
 5. 安装后核对插件行、标题/描述、图标和实际能力；恢复测试时改过的用户状态。不要把 profile 的 `link:` 路径、生成的 `node_modules` 或本机配置提交回仓库。
@@ -122,7 +123,8 @@ DSH 的索引是 **format 1** 的单个 JSON，用 `parseMarketIndex` 校验：
 
 每个插件只有一个版本号：`package.json` 的 `version`，遵循 SemVer。它是 DSH 插件页、索引和迁移判断「这是不是同一版」的唯一依据；同一个版本号不能对应两份不同的内容。
 
-- **改了插件目录就必须升版本**，并在同一个提交里更新该目录的 `CHANGELOG.md`。即使只改 README、locale、图标或 `package.json` 元数据，也至少升 patch——索引会为每个版本固定一个 commit，版本不动会让旧版本号静默指向另一份代码。
+- **仓库里的插件目录一旦修改就必须升版本**，并在同一个提交里更新该目录的 `CHANGELOG.md`。即使只改 README、locale、图标或 `package.json` 元数据，也至少升 patch——索引会为每个版本固定一个 commit，版本不动会让旧版本号静默指向另一份代码。
+- 本机自用副本可以连续修改；每次把本机改动提取到仓库前，合并后的差异必须升一次版本，不能把多个已发布版本之间的改动塞进同一个版本号。
 - 级别：**major** 改配置结构、包名、patch 行 id、`engines.dsh` 下限、数据格式或工具参数（旧用法会坏）；**minor** 加用户可见能力或选项且向后兼容；**patch** 修 bug、文案、样式、图标、文档和元数据整理。
 - 新插件从 `1.0.0` 开始；预发布用 `1.0.0-rc.1`，正式发布时去掉后缀。不要用 `0.x` 表示「还在改」，也不要用 build metadata 代替版本。
 - 不要手改 `docs/index.json` 的版本历史；`build-index.mjs` 会把旧版本连同各自的 commit 与发布时间保留在 `versions` 里。已经发布过的版本号不复用、不覆盖、不删除。
@@ -135,4 +137,4 @@ DSH 的索引是 **format 1** 的单个 JSON，用 `parseMarketIndex` 校验：
 
   `check` 会拒绝「目录内容变了但版本没升」「版本低于已发布版本」「当前版本没有 CHANGELOG 条目」三种情况；`build-index.mjs` 写索引前会再跑一次同样的检查。
 - 发布顺序：改代码 → 升版本并写 CHANGELOG → 跑测试 → 提交插件目录 → `node scripts/build-index.mjs` → 提交索引。顺序反过来会让索引指向没有该版本的 commit。
-- 迁入或回灌时以仓库 `package.json` 为准；如果本机副本更新，先把差异并回仓库，再判断升哪一级。`deploy.mjs` 复制到 `created-plugins/` 的副本、profile 的 `link:` 目标和 `plugin-backups/` 都不是版本源。
+- 本机自用副本是日常修改的地方，仓库是发布快照。提取时先比较两侧内容，在仓库副本上升版本并写 CHANGELOG；需要两边版本号对齐时，把新版本号同步回本机副本。`deploy.mjs` 复制到 `created-plugins/` 的副本、profile 的 `link:` 目标和 `plugin-backups/` 都不是版本源。

@@ -111,6 +111,8 @@ node scripts/deploy.mjs --all                             # 批量部署必须�
 
 每个插件只有一个版本号：`package.json` 的 `version`，遵循 SemVer。DSH 的插件页、索引和迁移判断都读它；同一个版本号不能对应两份不同的代码。
 
+本机自用副本与仓库是分开的两份：仓库是发布快照，本机 DSH 从自己的插件目录（`created-plugins/` 或独立工作目录）加载插件。日常修改发生在本机副本，提取到仓库时再合并、升版本；`deploy.mjs` 只用于把发布快照复制到本机，不能反过来当成本机更新的来源。
+
 改了插件目录就必须升版本——包括 README、locale、图标和 `package.json` 元数据——并在同一个提交里给该目录的 `CHANGELOG.md` 增加一条记录：
 
 ```powershell
