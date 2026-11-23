@@ -125,6 +125,19 @@
       },
       "versions": [
         {
+          "version": "1.0.2",
+          "publishTimestamp": 1795419571,
+          "source": {
+            "type": "git",
+            "url": "https://github.com/Kazuma-124/Personal_DSH_Plugins",
+            "commit": "ec46e7cc38b34f93ead5c3b5ed49847e7dd20e94",
+            "path": "conversation-notebook"
+          },
+          "engines": {
+            "dsh": ">=0.2.0-0 <0.3.0"
+          }
+        },
+        {
           "version": "1.0.1",
           "publishTimestamp": 1795419434,
           "source": {
