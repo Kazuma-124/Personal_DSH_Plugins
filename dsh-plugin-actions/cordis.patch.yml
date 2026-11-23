@@ -1,0 +1,11 @@
+[
+  {
+    "insert": [
+      {
+        "id": "@kazuma-124/dsh-plugin-actions:actions",
+        "name": "@kazuma-124/dsh-plugin-actions",
+        "config": {}
+      }
+    ]
+  }
+]

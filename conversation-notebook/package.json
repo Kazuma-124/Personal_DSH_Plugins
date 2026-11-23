@@ -1,6 +1,6 @@
 {
   "name": "@kazuma-124/dsh-conversation-notebook",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "module",
   "description": "A per-conversation plain-text notebook in the right sidebar of DeepSeek Harness, saved to the DSH host's disk without calling a model.",
   "exports": {
@@ -9,13 +9,6 @@
     "./locale/*.json": "./locale/*.json",
     "./icon": "./icon.svg"
   },
-  "files": [
-    "dist",
-    "cordis.patch.yml",
-    "locale",
-    "icon.svg",
-    "README.md"
-  ],
   "engines": {
     "dsh": ">=0.2.0-0 <0.3.0",
     "node": ">=24"

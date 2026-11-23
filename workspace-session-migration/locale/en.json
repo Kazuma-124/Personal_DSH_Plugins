@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Workspace session migration",
+    "description": "Adds a workspace migration page to the sidebar: select sessions in one workspace, choose a target, and migrate them; the original log moves to a backup or is archived. Also provides two Agent tools. Local session-log access only; no model calls, no network."
+  }
+}

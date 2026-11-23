@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Plugin actions",
+    "description": "Adds an \"Open containing folder\" action to every plugin page, revealing the plugin directory in this host's file manager."
+  }
+}

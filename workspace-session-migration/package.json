@@ -1,0 +1,65 @@
+{
+  "name": "@kazuma-124/dsh-workspace-session-migration",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Move conversations between DeepSeek Harness workspaces: copy the full stored history into a new session in the target workspace, attach it there, and remove the original from DSH. Local-only, no model calls.",
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "index.js",
+    "client.js",
+    "cordis.patch.yml",
+    "locale/*.json",
+    "icon.svg",
+    "README.md"
+  ],
+  "engines": {
+    "dsh": ">=0.2.2-rc.5 <0.3.0",
+    "node": ">=24"
+  },
+  "author": "Kazuma-124",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kazuma-124/Personal_DSH_Plugins.git",
+    "directory": "workspace-session-migration"
+  },
+  "homepage": "https://github.com/Kazuma-124/Personal_DSH_Plugins/tree/main/workspace-session-migration#readme",
+  "bugs": {
+    "url": "https://github.com/Kazuma-124/Personal_DSH_Plugins/issues"
+  },
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis",
+    "workspace",
+    "session",
+    "migration"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-layout",
+        "@deepseek-ai/dsh-client-ui-sidebar",
+        "@deepseek-ai/dsh-client-locale"
+      ],
+      "external": [
+        "react"
+      ]
+    }
+  },
+  "scripts": {
+    "test": "node --test tests/*.test.mjs"
+  }
+}

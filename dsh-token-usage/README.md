@@ -1,6 +1,6 @@
-﻿# DSH Token 用量统计
+# DSH Token 用量统计
 
-**English.** A DSH bundle that adds a **Token usage** entry to the left sidebar: totals, a per-project table and a trend chart, computed from local session logs. It never calls a model, never writes back to a conversation or log, and never uploads data. Not published to npm: clone the repository and add this directory in **Plugins → Add plugin**, or add this repository's plugin index in **Plugins → Discover**.
+**English.** A DSH bundle that adds a **Token usage** entry to the left sidebar: totals, a per-project table and a trend chart, computed from local session logs. It never calls a model, never writes back to a conversation or log, and never uploads data. Install by cloning the repository and adding this directory in **Plugins → Add plugin**, or by adding this repository's plugin index in **Plugins → Discover**.
 
 独立 DSH 插件，读取本地对话日志和项目目录数据，用普通 JavaScript 计算用量。统计、刷新、聚合与绘图不调用模型，不创建对话或定时任务，因此不产生额外模型 token 消耗。
 
@@ -10,9 +10,9 @@
 |:--|:--|
 | 插件索引 | **插件** → 开启实验性「自定义插件索引」→ **发现** → 添加索引源 `https://cdn.jsdelivr.net/gh/Kazuma-124/Personal_DSH_Plugins@main/docs/index.json` |
 | 克隆仓库 | `git clone https://github.com/Kazuma-124/Personal_DSH_Plugins.git`，再在 **插件 → 添加插件** 里选 `Personal_DSH_Plugins/dsh-token-usage` |
-| 本地目录 | 仓库根运行 `node scripts/deploy.mjs`，再把 `created-plugins/dsh-token-usage/index.mjs` 以 `file://` 行插入 profile 的 `cordis.patch.yml` |
+| 本地目录 | 仓库根运行 `node scripts/deploy.mjs --only dsh-token-usage`，再把 `created-plugins/dsh-token-usage/index.mjs` 以 `file://` 行插入 profile 的 `cordis.patch.yml` |
 
-暂未发布到 npm。按目录安装是 pnpm 的 `link`，不执行构建脚本，也不需要放行 `allowBuilds`。
+按目录安装使用本地 link，不执行构建脚本，也不需要放行 `allowBuilds`。
 
 ## 使用
 
@@ -37,9 +37,11 @@
 
 `engines.dsh` 为 `>=0.2.0-0 <0.3.0`：面向 DSH 0.2 系列（含其预发布版本），实测于 0.2.2-rc.5 桌面版。0.2.0 的早期小版本未逐一验证；DSH 0.3 需要先实测再放宽，否则安装会被拒绝。
 
+当前版本 `1.0.1`，各版本变化见 [CHANGELOG.md](CHANGELOG.md)。
+
 ## 开发与验证
 
-Node.js 24+（本机桌面 DSH 自带运行时）。无需 npm 依赖或编译。
+Node.js 24+（本机桌面 DSH 自带运行时）。无需第三方依赖或编译。
 
 运行 `node --test *.test.mjs` 验证统计与服务接口。
 

@@ -1,6 +1,6 @@
-﻿# 对话记事本
+# 对话记事本
 
-**English.** A DSH bundle that adds a **Conversation notebook** entry to the right sidebar: one plain-text note per conversation, saved to the DSH host's disk through authenticated owner-only routes. It never reads conversation content, never calls a model, never injects context and never uploads data. Not published to npm: clone the repository and add this directory in **Plugins → Add plugin**, or add this repository's plugin index in **Plugins → Discover**.
+**English.** A DSH bundle that adds a **Conversation notebook** entry to the right sidebar: one plain-text note per conversation, saved to the DSH host's disk through authenticated owner-only routes. It never reads conversation content, never calls a model, never injects context and never uploads data. Install by cloning the repository and adding this directory in **Plugins → Add plugin**, or by adding this repository's plugin index in **Plugins → Discover**.
 
 在对话右侧栏打开入口页（加号），选择“对话记事本”。每个对话有一份独立的纯文本笔记，新笔记从空白开始，只由用户手动编辑。输入后自动保存到 DSH 所在设备的磁盘；显示“已保存到磁盘”后，关闭侧栏、刷新、重启或清除浏览器数据都不会删除笔记。
 
@@ -12,13 +12,15 @@
 |:--|:--|
 | 插件索引 | **插件** → 开启实验性「自定义插件索引」→ **发现** → 添加索引源 `https://cdn.jsdelivr.net/gh/Kazuma-124/Personal_DSH_Plugins@main/docs/index.json` |
 | 克隆仓库 | `git clone https://github.com/Kazuma-124/Personal_DSH_Plugins.git`，再在 **插件 → 添加插件** 里选 `Personal_DSH_Plugins/conversation-notebook` |
-| 本地目录 | 仓库根运行 `node scripts/deploy.mjs`，再在 **插件 → 添加插件** 里选择 `created-plugins/e1727a2d-8dfb-4483-8fd4-2a5078b2229e` |
+| 本地目录 | 仓库根运行 `node scripts/deploy.mjs --only conversation-notebook`，再在 **插件 → 添加插件** 里选择 `created-plugins/e1727a2d-8dfb-4483-8fd4-2a5078b2229e` |
 
-暂未发布到 npm。按目录安装是 pnpm 的 `link`，`dist/` 已在仓库里构建好，不执行构建脚本，也不需要放行 `allowBuilds`。
+按目录安装使用本地 link，`dist/` 已在仓库里构建好，不执行构建脚本，也不需要放行 `allowBuilds`。
 
 ## 兼容性
 
 `engines.dsh` 为 `>=0.2.0-0 <0.3.0`：面向 DSH 0.2 系列（含其预发布版本），实测于 0.2.2-rc.5 桌面版。依赖 `sidebar.right.pane.tab` 槽位与已认证的 Connection 路由；DSH 0.3 需要先实测再放宽。
+
+当前版本 `1.0.1`，各版本变化见 [CHANGELOG.md](CHANGELOG.md)。
 
 ## 保存位置与备份
 

@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Kazuma 的 DSH 插件 — Token 用量统计与对话记事本</title>
-<meta name="description" content="用于 DeepSeek Harness（DSH）的两个可安装插件：按对话与项目汇总 Token 用量并显示趋势图；为每个对话提供独立纯文本笔记。纯 JavaScript、只读、不调用模型、不上传数据。DeepSeek Harness plugins: token usage statistics and a per-conversation notebook.">
-<meta name="keywords" content="DeepSeek Harness, DSH, dsh-plugin, plugin, Token 用量, 对话记事本, token usage, notebook, cordis">
+<title>Kazuma 的 DSH 插件 — Token 用量、对话记事本、插件操作与会话迁移</title>
+<meta name="description" content="用于 DeepSeek Harness（DSH）的四个可安装插件：按对话与项目汇总 Token 用量并显示趋势图；为每个对话提供独立纯文本笔记；在插件详情页打开所在文件夹；把对话迁移到另一个工作区。纯 JavaScript、不调用模型、不上传数据；会话迁移只在本机读写会话日志。DeepSeek Harness plugins: token usage, per-conversation notebook, plugin-manager actions, and workspace session migration.">
+<meta name="keywords" content="DeepSeek Harness, DSH, dsh-plugin, plugin, Token 用量, 对话记事本, 插件操作, 会话迁移, token usage, notebook, plugin manager, workspace, session migration, cordis">
 <link rel="canonical" href="https://kazuma-124.github.io/Personal_DSH_Plugins/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Kazuma 的 DSH 插件">
-<meta property="og:title" content="Kazuma 的 DSH 插件 — Token 用量统计与对话记事本">
-<meta property="og:description" content="两个 DeepSeek Harness 插件：Token 用量统计与对话记事本。纯 JavaScript、只读、不调用模型。">
+<meta property="og:title" content="Kazuma 的 DSH 插件 — Token 用量、对话记事本、插件操作与会话迁移">
+<meta property="og:description" content="四个 DeepSeek Harness 插件：Token 用量统计、对话记事本、插件操作与会话迁移。纯 JavaScript、不调用模型、不上传数据。">
 <meta property="og:url" content="https://kazuma-124.github.io/Personal_DSH_Plugins/">
 <meta name="twitter:card" content="summary">
 <style>
@@ -53,8 +53,8 @@
 <main>
   <h1>Kazuma 的 DSH 插件</h1>
   <p class="lede">
-    两个可独立安装的 <a href="https://github.com/deepseek-ai/deepseek-harness">DeepSeek Harness</a>（DSH）组合包。
-    纯 JavaScript、无第三方依赖、只读、不调用模型、不上传任何数据。
+    四个可独立安装的 <a href="https://github.com/deepseek-ai/deepseek-harness">DeepSeek Harness</a>（DSH）组合包。
+    纯 JavaScript、无第三方依赖、不调用模型、不上传任何数据；会话迁移只在本机复制和移动会话日志。
   </p>
 
   <h2>插件</h2>
@@ -77,12 +77,32 @@
     </div>
   </div>
 
+  <div class="card">
+    <img src="icons/dsh-plugin-actions.svg" alt="" width="36" height="36">
+    <div>
+      <h3>插件操作 · Plugin actions</h3>
+      <p>在插件详情页的动作区加一个「打开所在文件夹」按钮，点一下就在系统文件管理器里定位该插件的安装目录。只按包名解析本机目录，不读文件内容、不经过 shell、不调用模型。</p>
+      <p class="meta">目录 <code>dsh-plugin-actions/</code> · 需要 DSH <code>&gt;=0.2.0-0 &lt;0.3.0</code></p>
+    </div>
+  </div>
+
+  <div class="card">
+    <img src="icons/workspace-session-migration.svg" alt="" width="36" height="36">
+    <div>
+      <h3>会话迁移 · Workspace session migration</h3>
+      <p>把对话完整迁移到另一个工作区：复制全部事件到目标工作区的新会话，再把原会话移入备份区或归档。只在本机读写会话日志，不调用模型、不联网。</p>
+      <p class="meta">目录 <code>workspace-session-migration/</code> · 需要 DSH <code>&gt;=0.2.2-rc.5 &lt;0.3.0</code></p>
+    </div>
+  </div>
+
   <h2>安装</h2>
-  <p>暂未发布到 npm。克隆仓库后，在 DSH 的「插件 → 添加插件」里选择对应子目录即可：</p>
+  <p>克隆仓库后，在 DSH 的「插件 → 添加插件」里选择对应子目录即可：</p>
   <pre><code>git clone https://github.com/Kazuma-124/Personal_DSH_Plugins.git</code></pre>
   <ul>
     <li><code>Personal_DSH_Plugins/dsh-token-usage</code></li>
     <li><code>Personal_DSH_Plugins/conversation-notebook</code></li>
+    <li><code>Personal_DSH_Plugins/dsh-plugin-actions</code></li>
+    <li><code>Personal_DSH_Plugins/workspace-session-migration</code></li>
   </ul>
   <p>也可以在 DSH 的「插件 → 发现」里添加本仓库的插件索引，直接浏览和安装：</p>
   <pre><code>https://cdn.jsdelivr.net/gh/Kazuma-124/Personal_DSH_Plugins@main/docs/index.json</code></pre>
@@ -96,7 +116,7 @@
 
   <footer>
     MIT 许可 · 图标为本仓库原创 SVG。<br>
-    Two installable DeepSeek Harness bundles: token usage statistics and a per-conversation notebook. Plain JavaScript, read-only, no model calls, no data upload.
+    Four installable DeepSeek Harness bundles: token usage statistics, a per-conversation notebook, plugin-manager actions, and workspace session migration. Plain JavaScript, no model calls, no data upload.
   </footer>
 </main>
 
@@ -123,6 +143,28 @@
       "operatingSystem": "Windows, macOS, Linux",
       "description": "A per-conversation plain-text notebook in the DeepSeek Harness right sidebar, saved to the host disk through authenticated routes with no model calls.",
       "url": "https://github.com/Kazuma-124/Personal_DSH_Plugins/tree/main/conversation-notebook",
+      "author": { "@type": "Person", "name": "Kazuma-124" },
+      "license": "https://github.com/Kazuma-124/Personal_DSH_Plugins/blob/main/LICENSE"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "DSH Plugin actions",
+      "alternateName": "插件操作",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Windows, macOS, Linux",
+      "description": "Adds an Open containing folder action to every plugin page in the DeepSeek Harness plugin manager, revealing the installed package directory in the host file manager.",
+      "url": "https://github.com/Kazuma-124/Personal_DSH_Plugins/tree/main/dsh-plugin-actions",
+      "author": { "@type": "Person", "name": "Kazuma-124" },
+      "license": "https://github.com/Kazuma-124/Personal_DSH_Plugins/blob/main/LICENSE"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "DSH Workspace session migration",
+      "alternateName": "会话迁移",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Windows, macOS, Linux",
+      "description": "Moves a DeepSeek Harness conversation to another workspace by copying its complete event history into a new session, attaching it to the target workspace, and backing up or archiving the original.",
+      "url": "https://github.com/Kazuma-124/Personal_DSH_Plugins/tree/main/workspace-session-migration",
       "author": { "@type": "Person", "name": "Kazuma-124" },
       "license": "https://github.com/Kazuma-124/Personal_DSH_Plugins/blob/main/LICENSE"
     }

@@ -1,0 +1,3 @@
+- insert:
+    - id: workspace-session-migration
+      name: '@kazuma-124/dsh-workspace-session-migration'

@@ -1,8 +1,8 @@
 # Catalog submissions
 
-这两个文件是提交给 [awesome-dsh-plugin](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin) 的条目草稿。该目录是 dsh-market（插件市场插件，月下载百万级）、[dshmarket.com](https://dshmarket.com) 和 [awesome-dsh-plugin.com](https://awesome-dsh-plugin.com) 的数据源，也是 `https://cdn.jsdelivr.net/npm/dsh-plugin-catalog/index.json` 这个 format-1 索引的内容来源。
+这两个文件是提交给 [awesome-dsh-plugin](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin) 的条目草稿。该目录是 dsh-market（插件市场插件，月下载百万级）、[dshmarket.com](https://dshmarket.com) 和 [awesome-dsh-plugin.com](https://awesome-dsh-plugin.com) 的数据源，并发布成一份 format-1 索引。
 
-本仓库不发 npm，条目靠 GitHub 仓库分发即可：目录支持 GitHub-only 条目（dsh-market 会从仓库源码或 Release tarball 安装），不要求包已上 npm。
+本仓库通过 GitHub 仓库分发，条目支持 GitHub-only 来源（dsh-market 会从仓库源码或 Release tarball 安装），不要求包已上架包注册表。
 
 ## 怎么提交
 

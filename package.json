@@ -1,7 +1,6 @@
 {
   "name": "personal-dsh-plugins",
   "version": "1.0.0",
-  "private": true,
   "type": "module",
   "description": "Development repository for Kazuma-124's DeepSeek Harness plugins and their plugin market index.",
   "license": "MIT",
@@ -23,7 +22,8 @@
   "scripts": {
     "index": "node scripts/build-index.mjs",
     "index:check": "node scripts/build-index.mjs --check",
-    "test": "node --test dsh-token-usage/*.test.mjs conversation-notebook/tests/*.test.mjs"
+    "version:check": "node scripts/version.mjs check",
+    "test": "node --test scripts/version.test.mjs dsh-token-usage/*.test.mjs conversation-notebook/tests/*.test.mjs dsh-plugin-actions/tests/*.test.mjs workspace-session-migration/tests/*.test.mjs"
   },
   "devDependencies": {
     "@deepseek-ai/dsh-plugin-market-index": "0.2.2-rc.5"

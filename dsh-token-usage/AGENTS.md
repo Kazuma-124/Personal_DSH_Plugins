@@ -7,7 +7,7 @@
 - 一个 DSH 个人插件：读取本机 `~/.dsh` 的会话日志，按对话/项目/子项目汇总 token 用量，并提供时间趋势页面。
 - **只读、纯 JavaScript、零模型调用**：不调用 LLM，不创建会话，不跑定时任务，不写回日志或工作区。
 - 构成：host 插件（Node，注册 HTTP 路由）+ 浏览器模块（侧栏入口，iframe 嵌页面）+ 单文件静态页面。
-- 无 npm 依赖、无构建步骤；Node 24+（用 DSH 自带运行时）。
+- 无第三方依赖、无构建步骤；Node 24+（用 DSH 自带运行时）。
 
 ## 2. 文件地图（源码 7 个文件，另有 locale/ 与 icon.svg）
 
@@ -18,7 +18,7 @@
 | `dashboard.html` | 93 | 页面 + 全部 CSS/JS（**超长行**） | 低，但读取要小心 |
 | `client.js` | 9 | `window.__ModuleLoader__` 注册侧栏入口与 iframe 面板 | 低 |
 | `cordis.yml` | 3 | 以包名安装时的 insert 片段 | 低 |
-| `package.json` | 72 | `dsh.client` / `dsh.bundle` / `engines.dsh` / 发布字段声明 | 中，改错加载不了 |
+| `package.json` | 72 | `dsh.client` / `dsh.bundle` / `engines.dsh` / 元数据与插件声明 | 中，改错加载不了 |
 | `collector.test.mjs` + `host.test.mjs` | 99 + 44 | 回归测试 | — |
 
 `verification/` 只是本地验收产物（截图、Edge profile），**不参与运行，也不进转发包**。
@@ -36,7 +36,7 @@
 
 ## 4. 安装方式与生效范围（别乱猜）
 
-- 仓库是开发源，运行时不走仓库路径。`node scripts/deploy.mjs` 会把本目录复制到当前 profile 的默认插件目录 `<profile>/created-plugins/dsh-token-usage`（由环境变量 `DSH_PROFILE_DIR` 决定），再按需重启 DSH。
+- 仓库是开发源，运行时不走仓库路径。`node scripts/deploy.mjs --only dsh-token-usage` 会把本目录复制到当前 profile 的默认插件目录 `<profile>/created-plugins/dsh-token-usage`（由环境变量 `DSH_PROFILE_DIR` 决定），再按需重启 DSH。
 - profile 的 `cordis.patch.yml` 只保留一条 `insert`，`name` 指向部署后的 `created-plugins/dsh-token-usage/index.mjs`（file URL）。这是唯一与本机有关的配置，不写进仓库。
 - 插件目录若被移动，运行中的 DSH 仍持旧 `import.meta.url`，`/token-usage` 会 500（找不到 `dashboard.html`）：改动后必须重启 DSH，不要用复制页面文件长期兜底。
 - **`dashboard.html` 每次请求现读**：改完刷新页面即生效，无需重启。
@@ -78,10 +78,11 @@ Edge 已知坑（踩过就别再踩）：
 - 报告要短：改了什么、怎么验证的、结果如何。不要把文件内容、命令输出原样贴回对话。
 - 只有涉及计费/归属/去重的改动，才值得完整跑测试并逐条核对口径。
 
-## 8. 分发与打包
+## 8. 分发
 
-npm 发布产物共 10 个文件：`index.mjs`、`collector.mjs`、`client.js`、`dashboard.html`、`cordis.yml`、`package.json`、`README.md`、`locale/en.json`、`locale/zh.json`、`icon.svg`（`files` 未包含 `AGENTS.md` 与测试）。`locale/*.json` 提供插件页面的中英文标题与说明，`icon.svg` 是包内 `./icon` 导出的原创图标；两者都必须在 `files` 里。
+运行时文件共 10 个：`index.mjs`、`collector.mjs`、`client.js`、`dashboard.html`、`cordis.yml`、`package.json`、`README.md`、`locale/en.json`、`locale/zh.json`、`icon.svg`。`locale/*.json` 提供插件页面的中英文标题与说明，`icon.svg` 是包内 `./icon` 导出的原创图标。
 
 - **排除 `verification/`**（Edge profile 可能上百 MB）。
 - 对方启用：复制到其 profile 的 `created-plugins/dsh-token-usage`，再在 `cordis.patch.yml` 末尾加 `insert`，`name` 写 `file:///<该目录>/index.mjs`（正斜杠；路径含空格或中文时先挪到简单路径）。
 - 若按包名安装，`cordis.yml` 里的 `name` 必须等于包名（当前 `@kazuma-124/dsh-token-usage`）；`client.js` 里 `__ModuleLoader__.load({ id })` 的 id 也必须等于包名，否则浏览器模块加载失败。改包名要同时改这两处。
+- 版本在 `package.json`；改动本目录后按仓库根 `AGENTS.md` 第 8 节升版本并更新 `CHANGELOG.md`，不要沿用旧版本号发布新内容。

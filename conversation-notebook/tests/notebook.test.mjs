@@ -151,10 +151,12 @@ test('built plugin registers guide, body and title and closes only its own tabs'
 });
 
 test('distribution works without original source directory', async () => {
-  const root = new URL('../', import.meta.url); const pkg = JSON.parse(await readFile(new URL('package.json', root), 'utf8'));
+  const root = new URL('../', import.meta.url);
   const temporary = await mkdtemp(join(tmpdir(), 'dsh-notebook-package-'));
   try {
-    for (const file of ['package.json', ...pkg.files]) await cp(new URL(file, root), join(temporary, file), { recursive: true });
+    for (const file of ['package.json', 'dist', 'cordis.patch.yml', 'locale', 'icon.svg', 'README.md']) {
+      await cp(new URL(file, root), join(temporary, file), { recursive: true });
+    }
     const host = await import(pathToFileURL(join(temporary, 'dist/index.js')).href); assert.equal(typeof host.apply, 'function');
     const client = await readFile(join(temporary, 'dist/client.js'), 'utf8'); assert.equal(client.includes("from './notes-store.js'"), false);
     assert.equal(client.includes('D:\\'), false); new Script(client);

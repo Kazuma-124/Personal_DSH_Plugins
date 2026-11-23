@@ -23,7 +23,7 @@
 ## 3. 部署和生效
 
 - 开发源不等于运行目录。当前插件目标为 `<DSH_PROFILE_DIR>/created-plugins/e1727a2d-8dfb-4483-8fd4-2a5078b2229e`。
-- 仓库根 `scripts/deploy.mjs` 会同时更新其他插件；只改本插件时应只同步本插件，勿覆盖无关插件。
+- 仓库根 `scripts/deploy.mjs` 支持批量部署，但只改本插件时应使用 `--only conversation-notebook`，勿覆盖无关插件。
 - `package.json` 的 `link:` 指向部署目录。仅 Client 变更可刷新页面；Host 变更需重启 DSH。不能承诺未重启的进程已经使用新版后端。
 - 更新时保留磁盘数据目录。复制插件目录不包含笔记备份。
 
@@ -52,3 +52,4 @@
 - 源码或文案变更后，运行 build 和全部 tests（使用 DSH 自带 Node/Electron Node，`ELECTRON_RUN_AS_NODE=1`）。
 - 存储变更须覆盖失败不覆盖、重试、迁移冲突与跨进程CAS。
 - 没有浏览器控制时不得声称真实视觉或当前浏览器旧笔记迁移已验收；构建、测试、部署与真正重启后的激活须分开说明。
+- 版本在 `package.json`；改动本目录后按仓库根 `AGENTS.md` 第 8 节升版本并更新 `CHANGELOG.md`，不要沿用旧版本号发布新内容。
