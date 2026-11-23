@@ -1,6 +1,6 @@
 {
   "name": "@kazuma-124/dsh-conversation-notebook",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "type": "module",
   "description": "A per-conversation plain-text notebook in the right sidebar of DeepSeek Harness, saved to the DSH host's disk without calling a model.",
   "exports": {

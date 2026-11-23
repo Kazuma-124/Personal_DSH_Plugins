@@ -100,10 +100,10 @@ node scripts/deploy.mjs --all                             # 批量部署必须�
 
 | 插件 | 版本 | `engines.dsh` | 实测环境 |
 |:--|:--|:--|:--|
-| dsh-token-usage | 1.0.1 | `>=0.2.0-0 <0.3.0` | DSH 0.2.2-rc.5（Desktop） |
-| conversation-notebook | 1.0.2 | `>=0.2.0-0 <0.3.0` | DSH 0.2.2-rc.5（Desktop） |
-| dsh-plugin-actions | 1.0.0 | `>=0.2.0-0 <0.3.0` | DSH 0.2.2-rc.5（Desktop） |
-| workspace-session-migration | 1.0.0 | `>=0.2.2-rc.5 <0.3.0` | DSH 0.2.2-rc.5（Desktop） |
+| dsh-token-usage | 1.0.2 | `>=0.2.0-0 <0.3.0` | DSH 0.2.2-rc.5（Desktop） |
+| conversation-notebook | 1.0.3 | `>=0.2.0-0 <0.3.0` | DSH 0.2.2-rc.5（Desktop） |
+| dsh-plugin-actions | 1.0.1 | `>=0.2.0-0 <0.3.0` | DSH 0.2.2-rc.5（Desktop） |
+| workspace-session-migration | 1.0.1 | `>=0.2.2-rc.5 <0.3.0` | DSH 0.2.2-rc.5（Desktop） |
 
 `-0` 让范围包含 0.2.x 的预发布版本。这个范围表示「面向 0.2 系列」，`<0.3.0` 用于挡住未验证的大版本：升级 DSH 到 0.3 之后需要先实测再放宽，否则用户会看到「不兼容」。0.2.0 的早期小版本没有逐一验证。各版本的具体变化见插件目录里的 `CHANGELOG.md`。
 

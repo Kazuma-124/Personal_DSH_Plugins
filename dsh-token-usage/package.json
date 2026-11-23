@@ -1,6 +1,6 @@
 {
   "name": "@kazuma-124/dsh-token-usage",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "type": "module",
   "description": "Token usage statistics for DeepSeek Harness: per-conversation and per-project totals with a trend chart, read from local session logs without calling a model.",
   "main": "index.mjs",

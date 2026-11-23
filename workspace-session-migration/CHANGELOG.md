@@ -2,6 +2,10 @@
 
 版本号遵循 SemVer；每个版本对应一次提交，`docs/index.json` 保留各版本的固定 commit 与发布时间。
 
+## 1.0.1 — 2026-11-23
+
+- 同步发布元数据与文档；运行时代码未变。
+
 ## 1.0.0 — 2026-11-23
 
 - 首个公开版本：左侧栏「工作区迁移」页面，以及 `list_workspace_sessions`、`migrate_workspace_sessions` 两个 Agent 工具。

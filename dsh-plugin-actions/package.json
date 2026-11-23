@@ -1,6 +1,6 @@
 {
   "name": "@kazuma-124/dsh-plugin-actions",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "module",
   "description": "Adds an \"Open containing folder\" action to every plugin page in the DSH plugin manager.",
   "exports": {

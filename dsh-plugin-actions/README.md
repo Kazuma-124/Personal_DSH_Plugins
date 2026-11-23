@@ -25,7 +25,7 @@ dsh plugin --profile <profile> add ./Personal_DSH_Plugins/dsh-plugin-actions
 
 或在 **插件 → 添加插件** 里选中 `dsh-plugin-actions/` 目录，或添加本仓库的插件索引后在「发现」页安装。安装后打开任意插件的详情页，应能看到「打开所在文件夹」。
 
-当前版本 `1.0.0`，各版本变化见 [CHANGELOG.md](CHANGELOG.md)。
+当前版本 `1.0.1`，各版本变化见 [CHANGELOG.md](CHANGELOG.md)。
 
 ## 开发
 

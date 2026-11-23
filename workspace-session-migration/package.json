@@ -1,6 +1,6 @@
 {
   "name": "@kazuma-124/dsh-workspace-session-migration",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "module",
   "description": "Move conversations between DeepSeek Harness workspaces: copy the full stored history into a new session in the target workspace, attach it there, and remove the original from DSH. Local-only, no model calls.",
   "main": "index.js",

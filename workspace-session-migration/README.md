@@ -93,7 +93,7 @@ DSH 没有内置“移动会话”的操作：每个会话的日志存放在它�
 - 已在 DSH `0.2.2-rc.5`（Desktop，Windows）上按当前服务接口实现。
 - `engines.dsh` 为 `>=0.2.2-rc.5 <0.3.0`；升级到 0.3 之前需要重新实测。
 
-当前版本 `1.0.0`，各版本变化见 [CHANGELOG.md](CHANGELOG.md)。
+当前版本 `1.0.1`，各版本变化见 [CHANGELOG.md](CHANGELOG.md)。
 
 ## 开发与测试
 
