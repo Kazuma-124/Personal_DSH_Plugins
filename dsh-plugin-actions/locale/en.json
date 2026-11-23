@@ -1,6 +1,0 @@
-{
-  "meta": {
-    "title": "Plugin actions and unread marks",
-    "description": "Open a plugin's folder from its detail page, and mark a session as unread so the session list keeps the reminder until that session is opened again."
-  }
-}

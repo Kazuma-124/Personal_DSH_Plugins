@@ -22,7 +22,7 @@ node --test scripts/version.test.mjs              # 版本比较与递增
 node --test dsh-token-usage/*.test.mjs            # 统计口径
 cd conversation-notebook; node build.mjs          # 改 src/ 后必须重建 dist/
 cd conversation-notebook; node --test tests/*.test.mjs
-node --test dsh-plugin-actions/tests/*.test.mjs   # 插件操作
+node --test dsh-tweaks/tests/*.test.mjs   # 界面微调
 node scripts/deploy.mjs --all                       # 部署全部插件（必须显式 --all）
 node scripts/deploy.mjs --only dsh-token-usage      # 只部署一个插件（推荐）
 node scripts/build-index.mjs                      # 重新生成 docs/index.json 并校验
@@ -34,10 +34,10 @@ node scripts/build-index.mjs --check              # 只验证是否最新
 ## 3. 不能破坏的东西
 
 - **插件之间的独立性**：每个插件都是可单独安装、卸载、更新、迁移的单元。一次操作只针对一个插件；不得顺手改动另一个插件的目录、包名、patch、profile 条目或索引条目。插件之间不能互相 `import` 对方文件，也不能假设对方已安装；脚本必须支持只操作单个插件（`deploy.mjs --only`）。
-- **包名与 patch 的一致性**：每个插件的 patch 行 id 都要与包名对应。`conversation-notebook/cordis.patch.yml` 是 `<包名>:notebook`，`dsh-plugin-actions/cordis.patch.yml` 是 `<包名>:actions`，`dsh-token-usage/cordis.yml` 的 `name` 是包名。改包名必须同时改这些地方，以及 `conversation-notebook/build.mjs` 里的包名校验。改名会让已安装的副本变成另一个 bundle，需要卸载重装。
-- **部署目录名**：`scripts/deploy.mjs` 在 profile 里固定使用各插件自己的部署目录名（`dsh-token-usage`、`e1727a2d-8dfb-4483-8fd4-2a5078b2229e`、`dsh-plugin-actions`、`workspace-session-migration`），与本仓库的包名解耦。不要为了「对齐命名」去改这些目录，那会让用户已安装的条目变成孤儿。
+- **包名与 patch 的一致性**：每个插件的 patch 行 id 都要与包名对应。`conversation-notebook/cordis.patch.yml` 是 `<包名>:notebook`，`dsh-tweaks/cordis.patch.yml` 是 `<包名>:tweaks`，`dsh-token-usage/cordis.yml` 的 `name` 是包名。改包名必须同时改这些地方，以及 `conversation-notebook/build.mjs` 里的包名校验。改名会让已安装的副本变成另一个 bundle，需要卸载重装。
+- **部署目录名**：`scripts/deploy.mjs` 在 profile 里固定使用各插件自己的部署目录名（`dsh-token-usage`、`e1727a2d-8dfb-4483-8fd4-2a5078b2229e`、`dsh-tweaks`、`workspace-session-migration`），与本仓库的包名解耦。不要为了「对齐命名」去改这些目录，那会让用户已安装的条目变成孤儿。
 - **索引与包的一致性**：`docs/index.json` 是生成物，字段全部来自 `package.json`、`locale/*.json` 和 `icon.svg`。不要手改；改完包并提交后跑 `node scripts/build-index.mjs`。索引固定的是 commit，所以“先提交、再生成”的顺序不能颠倒。
-- **只读与隐私边界**：所有插件都不调用模型、不上传数据。`dsh-token-usage` 只读本机 DSH 数据目录、页面与 API 只允许回环地址；`conversation-notebook` 只通过已认证的 Connection 路由读写本机磁盘；`dsh-plugin-actions` 只按包名把本机插件目录交给系统文件管理器打开，不读文件内容、不经过 shell。新功能不能突破这些边界。
+- **只读与隐私边界**：所有插件都不调用模型、不上传数据。`dsh-token-usage` 只读本机 DSH 数据目录、页面与 API 只允许回环地址；`conversation-notebook` 只通过已认证的 Connection 路由读写本机磁盘；`dsh-tweaks` 只按包名把本机插件目录交给系统文件管理器打开，不读文件内容、不经过 shell，其会话未读标记只保存在浏览器本地存储、不写入会话日志。新功能不能突破这些边界。
 - **`conversation-notebook/dist/` 是提交物**：按目录安装和 git 安装都直接用它。改 `src/` 却忘了重建，等于发布旧代码。
 
 ## 4. Token 纪律

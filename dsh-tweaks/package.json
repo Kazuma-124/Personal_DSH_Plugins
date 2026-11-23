@@ -1,8 +1,8 @@
 {
-  "name": "@kazuma-124/dsh-plugin-actions",
-  "version": "1.1.0",
+  "name": "@kazuma-124/dsh-tweaks",
+  "version": "2.0.0",
   "type": "module",
-  "description": "Small DSH interface additions: open a plugin's folder from the Plugins manager, and mark a session as unread until it is opened again.",
+  "description": "A collection of small quality-of-life tweaks for the DeepSeek Harness web interface: open a plugin's folder from the Plugins manager, and mark a session as unread until it is opened again.",
   "exports": {
     ".": "./index.js",
     "./client": "./client.js",
@@ -19,9 +19,9 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Kazuma-124/Personal_DSH_Plugins.git",
-    "directory": "dsh-plugin-actions"
+    "directory": "dsh-tweaks"
   },
-  "homepage": "https://github.com/Kazuma-124/Personal_DSH_Plugins/tree/main/dsh-plugin-actions#readme",
+  "homepage": "https://github.com/Kazuma-124/Personal_DSH_Plugins/tree/main/dsh-tweaks#readme",
   "bugs": {
     "url": "https://github.com/Kazuma-124/Personal_DSH_Plugins/issues"
   },
@@ -30,6 +30,8 @@
     "dsh-plugin",
     "deepseek-harness",
     "cordis",
+    "tweaks",
+    "ui",
     "plugin-manager",
     "file-manager",
     "session-list",

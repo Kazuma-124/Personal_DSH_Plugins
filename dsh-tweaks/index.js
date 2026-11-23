@@ -5,7 +5,7 @@ import { homedir } from 'node:os';
 import { dirname, join } from 'node:path';
 
 export const inject = ['connection'];
-export const API_PATH = '/api/plugin-actions/';
+export const API_PATH = '/api/tweaks/';
 const MAX_BODY_BYTES = 8192;
 const PACKAGE_NAME = /^(@[a-z0-9-~][a-z0-9-._~]*\/)?[a-z0-9-~][a-z0-9-._~]*$/i;
 

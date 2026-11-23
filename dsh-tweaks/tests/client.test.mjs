@@ -7,13 +7,15 @@ import test from 'node:test';
 const packageDir = dirname(dirname(fileURLToPath(import.meta.url)));
 const clientSource = await readFile(join(packageDir, 'client.js'), 'utf8');
 
-const STORAGE_KEY = 'dsh.plugin-actions.unread.v1';
+const STORAGE_KEY = 'dsh.tweaks.unread.v1';
+const LEGACY_STORAGE_KEY = 'dsh.plugin-actions.unread.v1';
 const registrations = [];
 const storage = new Map();
 
 const localStorageStub = {
   getItem: key => (storage.has(key) ? storage.get(key) : null),
   setItem: (key, value) => { storage.set(key, String(value)); },
+  removeItem: key => { storage.delete(key); },
 };
 
 globalThis.window = {
@@ -178,7 +180,7 @@ function renderMark(harness, sessionId, { mainView = 0, completionUnread = false
 
 test('package browser half registers once with the package identity', () => {
   assert.equal(registrations.length, 1);
-  assert.equal(registrations[0].id, '@kazuma-124/dsh-plugin-actions');
+  assert.equal(registrations[0].id, '@kazuma-124/dsh-tweaks');
 });
 
 test('registers the contribution surfaces, menu icon and locale dictionaries', async () => {
@@ -186,9 +188,9 @@ test('registers the contribution surfaces, menu icon and locale dictionaries', a
   const { slotRegistrations, localeRegistrations } = mount();
   const names = slotRegistrations.map(item => item.options.name).sort();
   assert.deepEqual(names, ['contextMenu.icon', 'plugins.detail.actions', 'sidebar.session.row.trailing']);
-  assert.equal(slotRegistrations.find(item => item.options.name === 'contextMenu.icon').options.key, 'plugin-actions.unread');
+  assert.equal(slotRegistrations.find(item => item.options.name === 'contextMenu.icon').options.key, 'tweaks.unread');
 
-  const locale = localeRegistrations.find(item => item.ns === '@kazuma-124/dsh-plugin-actions');
+  const locale = localeRegistrations.find(item => item.ns === '@kazuma-124/dsh-tweaks');
   assert.ok(locale);
   for (const key of [
     'reveal', 'revealFailed', 'markUnread', 'clearUnread', 'markedNotice', 'clearedNotice', 'unreadBadge', 'unreadStoreFailed',
@@ -205,14 +207,14 @@ test('session menu toggles a mark and re-resolves its label', () => {
   storage.clear();
   const harness = mount();
   const contribution = menuContribution(harness);
-  assert.equal(contribution.id, 'plugin-actions-mark-unread');
+  assert.equal(contribution.id, 'tweaks-mark-unread');
   assert.equal(contribution.order, 350);
 
   const target = { sessionId: 'session-a', displayTitle: 'A' };
   const [mark] = contribution.resolve(target);
   assert.equal(mark.id, 'mark-unread');
   assert.equal(mark.label, 'Mark as unread');
-  assert.deepEqual(mark.icon, { key: 'plugin-actions.unread' });
+  assert.deepEqual(mark.icon, { key: 'tweaks.unread' });
   mark.run();
   assert.deepEqual(storedMarks(), ['session-a']);
   assert.deepEqual(harness.notifyCalls.at(-1), ['Marked as unread', true]);
@@ -312,6 +314,15 @@ test('optional menu, session and workspace services degrade without breaking the
     assert.equal(harness.slotRegistrations.length, 3);
     if (omit.includes('contextMenus')) assert.equal(harness.menuContributions.length, 0);
   }
+});
+
+test('marks stored under the former package name are carried over', () => {
+  storage.clear();
+  storage.set(LEGACY_STORAGE_KEY, JSON.stringify(['session-l']));
+  const harness = mount();
+  assert.deepEqual(storedMarks(), ['session-l']);
+  assert.equal(storage.has(LEGACY_STORAGE_KEY), false);
+  assert.equal(renderMark(harness, 'session-l')?.props['aria-label'], 'unreadBadge');
 });
 
 test('a failed browser storage write reports through the shared menu notice', () => {

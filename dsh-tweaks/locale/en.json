@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "DSH tweaks",
+    "description": "A collection of small DeepSeek Harness interface tweaks: open a plugin's folder from its detail page, and mark a session as unread."
+  }
+}

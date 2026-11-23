@@ -1,4 +1,4 @@
-import assert from 'node:assert/strict';
+﻿import assert from 'node:assert/strict';
 import { mkdir, mkdtemp, readFile, rm, stat, writeFile } from 'node:fs/promises';
 import { realpathSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -11,7 +11,7 @@ import { API_PATH, apply, resolvePackageDirectory } from '../index.js';
 const packageDir = dirname(dirname(fileURLToPath(import.meta.url)));
 
 async function makeProfile(t) {
-  const root = await mkdtemp(join(tmpdir(), 'dsh-plugin-actions-'));
+  const root = await mkdtemp(join(tmpdir(), 'dsh-tweaks-'));
   t.after(() => rm(root, { recursive: true, force: true }));
   const profile = join(root, 'profile');
   await mkdir(profile, { recursive: true });
@@ -62,13 +62,13 @@ test('rejects invalid requests before opening anything', async t => {
   useProfile(t, profile);
   const route = registerRoute();
 
-  const invalid = await route.fetch(new Request('http://127.0.0.1/api/plugin-actions/reveal', {
+  const invalid = await route.fetch(new Request('http://127.0.0.1/api/tweaks/reveal', {
     method: 'POST',
     body: JSON.stringify({ packageName: 42 }),
   }));
   assert.equal(invalid.status, 400);
 
-  const missing = await route.fetch(new Request('http://127.0.0.1/api/plugin-actions/reveal', {
+  const missing = await route.fetch(new Request('http://127.0.0.1/api/tweaks/reveal', {
     method: 'POST',
     body: JSON.stringify({ packageName: '@scope/missing' }),
   }));
@@ -77,18 +77,19 @@ test('rejects invalid requests before opening anything', async t => {
 
 test('package metadata and assets stay consistent', async () => {
   const pkg = JSON.parse(await readFile(join(packageDir, 'package.json'), 'utf8'));
-  assert.equal(pkg.name, '@kazuma-124/dsh-plugin-actions');
+  assert.equal(pkg.name, '@kazuma-124/dsh-tweaks');
   assert.equal(pkg.dsh.bundle.patch, './cordis.patch.yml');
   assert.ok(pkg.engines.dsh);
   assert.equal(pkg.license, 'MIT');
 
   const patch = JSON.parse(await readFile(join(packageDir, pkg.dsh.bundle.patch), 'utf8'));
   assert.equal(patch[0].insert[0].name, pkg.name);
-  assert.equal(patch[0].insert[0].id, pkg.name + ':actions');
+  assert.equal(patch[0].insert[0].id, pkg.name + ':tweaks');
 
   const client = await readFile(join(packageDir, 'client.js'), 'utf8');
   assert.ok(client.includes(`id: '${pkg.name}'`));
   assert.ok(client.includes("'plugins.detail.actions'"));
+  assert.ok(client.includes("'/api/tweaks/reveal'"));
 
   for (const lang of ['en', 'zh']) {
     const locale = JSON.parse(await readFile(join(packageDir, 'locale', `${lang}.json`), 'utf8'));

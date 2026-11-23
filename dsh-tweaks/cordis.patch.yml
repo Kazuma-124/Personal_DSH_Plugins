@@ -1,0 +1,11 @@
+[
+  {
+    "insert": [
+      {
+        "id": "@kazuma-124/dsh-tweaks:tweaks",
+        "name": "@kazuma-124/dsh-tweaks",
+        "config": {}
+      }
+    ]
+  }
+]

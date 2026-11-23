@@ -1,4 +1,6 @@
-// Browser half of the package: two small additions to the DSH web interface.
+﻿// Browser half of the package: small quality-of-life tweaks for the DSH web
+// interface. Each tweak is independent; they share this package because all of
+// them adjust the same interface.
 //
 // - One control on every plugin page of the Plugins manager that reveals the
 //   package directory in the host's file manager.
@@ -7,14 +9,16 @@
 //   clears it. Marks live in this browser's storage because the Session
 //   Controller keeps no durable per-Session flag for a personal reminder.
 window.__ModuleLoader__.load({
-  id: '@kazuma-124/dsh-plugin-actions',
+  id: '@kazuma-124/dsh-tweaks',
   factory(require) {
     const React = require('react');
     const h = React.createElement;
-    const NS = '@kazuma-124/dsh-plugin-actions';
-    const UNREAD_ICON_KEY = 'plugin-actions.unread';
+    const NS = '@kazuma-124/dsh-tweaks';
+    const UNREAD_ICON_KEY = 'tweaks.unread';
     /** Browser storage key; the version suffix leaves room for a format change. */
-    const UNREAD_STORAGE_KEY = 'dsh.plugin-actions.unread.v1';
+    const UNREAD_STORAGE_KEY = 'dsh.tweaks.unread.v1';
+    /** Marks written under the package's former name are carried over once. */
+    const LEGACY_UNREAD_STORAGE_KEY = 'dsh.plugin-actions.unread.v1';
     /** Upper bound for stored ids, so a long-lived or corrupted store stays small. */
     const MAX_UNREAD_SESSIONS = 500;
     const MAX_SESSION_ID_LENGTH = 200;
@@ -82,9 +86,9 @@ window.__ModuleLoader__.load({
       background: 'var(--dsw-alias-state-success-primary)',
     };
 
-    function readUnreadMarks() {
+    function readStoredMarks(key) {
       try {
-        const raw = window.localStorage.getItem(UNREAD_STORAGE_KEY);
+        const raw = window.localStorage.getItem(key);
         if (raw === null) return [];
         const parsed = JSON.parse(raw);
         if (!Array.isArray(parsed)) return [];
@@ -96,6 +100,18 @@ window.__ModuleLoader__.load({
       } catch {
         return [];
       }
+    }
+
+    function readUnreadMarks() {
+      const current = readStoredMarks(UNREAD_STORAGE_KEY);
+      if (current.length > 0) return current;
+      const legacy = readStoredMarks(LEGACY_UNREAD_STORAGE_KEY);
+      if (legacy.length === 0) return [];
+      try {
+        window.localStorage.setItem(UNREAD_STORAGE_KEY, JSON.stringify(legacy));
+        window.localStorage.removeItem(LEGACY_UNREAD_STORAGE_KEY);
+      } catch { /* keep the legacy copy readable when the new key cannot be written */ }
+      return legacy;
     }
 
     function createUnreadMarks() {
@@ -253,7 +269,7 @@ window.__ModuleLoader__.load({
             if (typeof menuCtx.contextMenus.notify === 'function') menuCtx.contextMenus.notify(text, success);
           };
           menuCtx.effect(() => menuCtx.contextMenus.register({
-            id: 'plugin-actions-mark-unread',
+            id: 'tweaks-mark-unread',
             target: 'session',
             // After the pin/rename/fork group, before the identification group.
             order: 350,
@@ -291,7 +307,7 @@ window.__ModuleLoader__.load({
             const reveal = async () => {
               setState('opening');
               try {
-                const response = await window.fetch('/api/plugin-actions/reveal', {
+                const response = await window.fetch('/api/tweaks/reveal', {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
                   body: JSON.stringify({ packageName: pkg.name }),
@@ -316,14 +332,14 @@ window.__ModuleLoader__.load({
 
           const disposeActions = ctx.slots.inject('plugins.detail.actions', () => ctx.slots.register({
             name: 'plugins.detail.actions',
-            id: 'plugin-actions-reveal',
+            id: 'tweaks-reveal',
             order: 20,
             locale: NS,
           }, RevealAction));
 
           const disposeUnread = ctx.slots.inject('sidebar.session.row.trailing', () => ctx.slots.register({
             name: 'sidebar.session.row.trailing',
-            id: 'plugin-actions-unread',
+            id: 'tweaks-unread',
             order: 20,
             locale: NS,
           }, UnreadMark));
