@@ -5,8 +5,8 @@
     "zh": "Kazuma 的 DSH 插件"
   },
   "description": {
-    "en": "Bundles for DeepSeek Harness: token usage statistics and a per-conversation notebook. Read-only, no model calls.",
-    "zh": "DeepSeek Harness 组合包：Token 用量统计与对话记事本。只读、不调用模型。"
+    "en": "Bundles for DeepSeek Harness: token usage statistics, a per-conversation notebook, plugin-manager actions and workspace session migration.",
+    "zh": "DeepSeek Harness 组合包：Token 用量统计、对话记事本、插件操作与会话迁移。"
   },
   "metadata": {
     "categories": {
@@ -20,6 +20,12 @@
         "title": {
           "en": "Interface",
           "zh": "界面"
+        }
+      },
+      "workspace": {
+        "title": {
+          "en": "Workspaces",
+          "zh": "工作区"
         }
       }
     },
@@ -59,6 +65,19 @@
         "labels": []
       },
       "versions": [
+        {
+          "version": "1.0.1",
+          "publishTimestamp": 1795419434,
+          "source": {
+            "type": "git",
+            "url": "https://github.com/Kazuma-124/Personal_DSH_Plugins",
+            "commit": "1a3f5c01b6f0262e45ab2552fb1f6f40e6307581",
+            "path": "dsh-token-usage"
+          },
+          "engines": {
+            "dsh": ">=0.2.0-0 <0.3.0"
+          }
+        },
         {
           "version": "1.0.0",
           "publishTimestamp": 1795243949,
@@ -106,6 +125,19 @@
       },
       "versions": [
         {
+          "version": "1.0.1",
+          "publishTimestamp": 1795419434,
+          "source": {
+            "type": "git",
+            "url": "https://github.com/Kazuma-124/Personal_DSH_Plugins",
+            "commit": "1a3f5c01b6f0262e45ab2552fb1f6f40e6307581",
+            "path": "conversation-notebook"
+          },
+          "engines": {
+            "dsh": ">=0.2.0-0 <0.3.0"
+          }
+        },
+        {
           "version": "1.0.0",
           "publishTimestamp": 1795243949,
           "source": {
@@ -116,6 +148,97 @@
           },
           "engines": {
             "dsh": ">=0.2.0-0 <0.3.0"
+          }
+        }
+      ]
+    },
+    {
+      "name": "@kazuma-124/dsh-plugin-actions",
+      "title": {
+        "en": "Plugin actions",
+        "zh": "插件操作"
+      },
+      "description": {
+        "en": "Adds an \"Open containing folder\" action to every plugin page, revealing the plugin directory in this host's file manager.",
+        "zh": "在每个插件页面提供一个「打开所在文件夹」动作，直接在本机文件管理器中定位插件目录。"
+      },
+      "icon": "icons/dsh-plugin-actions.svg",
+      "author": "Kazuma-124",
+      "homepage": "https://github.com/Kazuma-124/Personal_DSH_Plugins/tree/main/dsh-plugin-actions",
+      "repository": {
+        "url": "https://github.com/Kazuma-124/Personal_DSH_Plugins",
+        "directory": "dsh-plugin-actions"
+      },
+      "metadata": {
+        "category": "ui",
+        "keywords": [
+          "dsh",
+          "dsh-plugin",
+          "deepseek-harness",
+          "cordis",
+          "plugin-manager",
+          "file-manager"
+        ],
+        "labels": []
+      },
+      "versions": [
+        {
+          "version": "1.0.0",
+          "publishTimestamp": 1795419434,
+          "source": {
+            "type": "git",
+            "url": "https://github.com/Kazuma-124/Personal_DSH_Plugins",
+            "commit": "1a3f5c01b6f0262e45ab2552fb1f6f40e6307581",
+            "path": "dsh-plugin-actions"
+          },
+          "engines": {
+            "dsh": ">=0.2.0-0 <0.3.0"
+          }
+        }
+      ]
+    },
+    {
+      "name": "@kazuma-124/dsh-workspace-session-migration",
+      "title": {
+        "en": "Workspace session migration",
+        "zh": "工作区会话迁移"
+      },
+      "description": {
+        "en": "Adds a workspace migration page to the sidebar: select sessions in one workspace, choose a target, and migrate them; the original log moves to a backup or is archived. Also provides two Agent tools. Local session-log access only; no model calls, no network.",
+        "zh": "在左侧栏新增「工作区迁移」页：勾选源工作区的会话、选择目标工作区即可复制迁移，原日志进备份或归档。同时提供两个 Agent 工具。只在本机读写 DSH 会话日志，不调用模型、不联网。"
+      },
+      "icon": "icons/workspace-session-migration.svg",
+      "author": "Kazuma-124",
+      "homepage": "https://github.com/Kazuma-124/Personal_DSH_Plugins/tree/main/workspace-session-migration",
+      "repository": {
+        "url": "https://github.com/Kazuma-124/Personal_DSH_Plugins",
+        "directory": "workspace-session-migration"
+      },
+      "metadata": {
+        "category": "workspace",
+        "keywords": [
+          "dsh",
+          "dsh-plugin",
+          "deepseek-harness",
+          "cordis",
+          "workspace",
+          "session",
+          "migration"
+        ],
+        "labels": []
+      },
+      "versions": [
+        {
+          "version": "1.0.0",
+          "publishTimestamp": 1795419434,
+          "source": {
+            "type": "git",
+            "url": "https://github.com/Kazuma-124/Personal_DSH_Plugins",
+            "commit": "1a3f5c01b6f0262e45ab2552fb1f6f40e6307581",
+            "path": "workspace-session-migration"
+          },
+          "engines": {
+            "dsh": ">=0.2.2-rc.5 <0.3.0"
           }
         }
       ]
