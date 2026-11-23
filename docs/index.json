@@ -192,21 +192,21 @@
       ]
     },
     {
-      "name": "@kazuma-124/dsh-plugin-actions",
+      "name": "@kazuma-124/dsh-tweaks",
       "title": {
-        "en": "Plugin actions and unread marks",
-        "zh": "插件操作与未读标记"
+        "en": "DSH tweaks",
+        "zh": "DSH 微调"
       },
       "description": {
-        "en": "Open a plugin's folder from its detail page, and mark a session as unread so the session list keeps the reminder until that session is opened again.",
-        "zh": "在插件详情页直接打开插件所在文件夹，并把会话标为未读，让侧栏保留提醒直到再次打开该会话。"
+        "en": "A collection of small DeepSeek Harness interface tweaks: open a plugin's folder from its detail page, and mark a session as unread.",
+        "zh": "对 DSH 界面的一批小改动：在插件详情页打开插件所在文件夹、把会话标为未读；同类小功能都放在这个插件里。"
       },
-      "icon": "icons/dsh-plugin-actions.svg",
+      "icon": "icons/dsh-tweaks.svg",
       "author": "Kazuma-124",
-      "homepage": "https://github.com/Kazuma-124/Personal_DSH_Plugins/tree/main/dsh-plugin-actions",
+      "homepage": "https://github.com/Kazuma-124/Personal_DSH_Plugins/tree/main/dsh-tweaks",
       "repository": {
         "url": "https://github.com/Kazuma-124/Personal_DSH_Plugins",
-        "directory": "dsh-plugin-actions"
+        "directory": "dsh-tweaks"
       },
       "metadata": {
         "category": "ui",
@@ -215,6 +215,8 @@
           "dsh-plugin",
           "deepseek-harness",
           "cordis",
+          "tweaks",
+          "ui",
           "plugin-manager",
           "file-manager",
           "session-list",
@@ -224,39 +226,13 @@
       },
       "versions": [
         {
-          "version": "1.1.0",
-          "publishTimestamp": 1795430902,
+          "version": "2.0.0",
+          "publishTimestamp": 1795431200,
           "source": {
             "type": "git",
             "url": "https://github.com/Kazuma-124/Personal_DSH_Plugins",
-            "commit": "b7f349c8511e5517c26b82a8d4f0555b0d369694",
-            "path": "dsh-plugin-actions"
-          },
-          "engines": {
-            "dsh": ">=0.2.0-0 <0.3.0"
-          }
-        },
-        {
-          "version": "1.0.1",
-          "publishTimestamp": 1795420186,
-          "source": {
-            "type": "git",
-            "url": "https://github.com/Kazuma-124/Personal_DSH_Plugins",
-            "commit": "04899c7fb4ee5c1db0f43ec33fbe0b93c920ceff",
-            "path": "dsh-plugin-actions"
-          },
-          "engines": {
-            "dsh": ">=0.2.0-0 <0.3.0"
-          }
-        },
-        {
-          "version": "1.0.0",
-          "publishTimestamp": 1795419434,
-          "source": {
-            "type": "git",
-            "url": "https://github.com/Kazuma-124/Personal_DSH_Plugins",
-            "commit": "1a3f5c01b6f0262e45ab2552fb1f6f40e6307581",
-            "path": "dsh-plugin-actions"
+            "commit": "bc0e69cb173d9600069643efa9d52cce357856bc",
+            "path": "dsh-tweaks"
           },
           "engines": {
             "dsh": ">=0.2.0-0 <0.3.0"
