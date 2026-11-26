@@ -1,16 +1,16 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Kazuma 的 DSH 插件 — Token 用量、对话记事本、界面微调与会话迁移</title>
-<meta name="description" content="用于 DeepSeek Harness（DSH）的四个可安装插件：按对话与项目汇总 Token 用量并显示趋势图；为每个对话提供独立纯文本笔记；一批 DSH 界面小改动（打开插件目录、会话标为未读）；把对话迁移到另一个工作区。纯 JavaScript、不调用模型、不上传数据；会话迁移只在本机读写会话日志。DeepSeek Harness plugins: token usage, per-conversation notebook, interface tweaks, and workspace session migration.">
-<meta name="keywords" content="DeepSeek Harness, DSH, dsh-plugin, plugin, Token 用量, 对话记事本, 界面微调, 会话迁移, token usage, notebook, UI tweaks, workspace, session migration, cordis">
+<title>Kazuma 的 DSH 插件 — Token 用量、对话记事本、界面微调、压缩提示词与会话迁移</title>
+<meta name="description" content="用于 DeepSeek Harness（DSH）的五个可安装插件：按对话与项目汇总 Token 用量并显示趋势图；为每个对话提供独立纯文本笔记；一批 DSH 界面小改动（打开插件目录、会话标为未读）；在设置中全局选择压缩提示词并管理官方快照；把对话迁移到另一个工作区。纯 JavaScript、不调用模型、不上传数据；会话迁移只在本机读写会话日志。DeepSeek Harness plugins: token usage, per-conversation notebook, interface tweaks, compaction prompts, and workspace session migration.">
+<meta name="keywords" content="DeepSeek Harness, DSH, dsh-plugin, plugin, Token 用量, 对话记事本, 界面微调, 压缩提示词, 上下文压缩, 会话迁移, token usage, notebook, UI tweaks, compaction prompt, workspace, session migration, cordis">
 <link rel="canonical" href="https://kazuma-124.github.io/Personal_DSH_Plugins/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Kazuma 的 DSH 插件">
-<meta property="og:title" content="Kazuma 的 DSH 插件 — Token 用量、对话记事本、界面微调与会话迁移">
-<meta property="og:description" content="四个 DeepSeek Harness 插件：Token 用量统计、对话记事本、界面微调与会话迁移。纯 JavaScript、不调用模型、不上传数据。">
+<meta property="og:title" content="Kazuma 的 DSH 插件 — Token 用量、对话记事本、界面微调、压缩提示词与会话迁移">
+<meta property="og:description" content="五个 DeepSeek Harness 插件：Token 用量统计、对话记事本、界面微调、压缩提示词与会话迁移。纯 JavaScript、不调用模型、不上传数据。">
 <meta property="og:url" content="https://kazuma-124.github.io/Personal_DSH_Plugins/">
 <meta name="twitter:card" content="summary">
 <style>
@@ -53,8 +53,8 @@
 <main>
   <h1>Kazuma 的 DSH 插件</h1>
   <p class="lede">
-    四个可独立安装的 <a href="https://github.com/deepseek-ai/deepseek-harness">DeepSeek Harness</a>（DSH）组合包。
-    纯 JavaScript、无第三方依赖、不调用模型、不上传任何数据；会话迁移只在本机复制和移动会话日志。
+    五个可独立安装的 <a href="https://github.com/deepseek-ai/deepseek-harness">DeepSeek Harness</a>（DSH）组合包。
+    纯 JavaScript、无第三方依赖、不调用模型、不上传任何数据；会话迁移只在本机复制和移动会话日志，压缩提示词只替换压缩请求末尾的摘要指令。
   </p>
 
   <h2>插件</h2>
@@ -87,6 +87,15 @@
   </div>
 
   <div class="card">
+    <img src="icons/dsh-compaction-prompts.svg" alt="" width="36" height="36">
+    <div>
+      <h3>压缩提示词 · Compaction prompts</h3>
+      <p>在 DSH 设置里为所有会话选择一份压缩摘要指令：跟随当前安装的官方版本、固定官方历史快照，或使用自定义提示词。支持新增、编辑和删除自定义项，历史快照可折叠并可清理；当前安装版本对应的快照受保护。只替换压缩请求末尾的摘要指令，保留官方模型路由与截断策略，不联网。</p>
+      <p class="meta">目录 <code>dsh-compaction-prompts/</code> · 需要 DSH <code>&gt;=0.2.2-rc.5 &lt;0.3.0</code></p>
+    </div>
+  </div>
+
+  <div class="card">
     <img src="icons/workspace-session-migration.svg" alt="" width="36" height="36">
     <div>
       <h3>会话迁移 · Workspace session migration</h3>
@@ -102,6 +111,7 @@
     <li><code>Personal_DSH_Plugins/dsh-token-usage</code></li>
     <li><code>Personal_DSH_Plugins/conversation-notebook</code></li>
     <li><code>Personal_DSH_Plugins/dsh-tweaks</code></li>
+    <li><code>Personal_DSH_Plugins/dsh-compaction-prompts</code></li>
     <li><code>Personal_DSH_Plugins/workspace-session-migration</code></li>
   </ul>
   <p>也可以在 DSH 的「插件 → 发现」里添加本仓库的插件索引，直接浏览和安装：</p>
@@ -116,7 +126,7 @@
 
   <footer>
     MIT 许可 · 图标为本仓库原创 SVG。<br>
-    Four installable DeepSeek Harness bundles: token usage statistics, a per-conversation notebook, a collection of interface tweaks, and workspace session migration. Plain JavaScript, no model calls, no data upload.
+    Five installable DeepSeek Harness bundles: token usage statistics, a per-conversation notebook, a collection of interface tweaks, a global compaction-prompt picker, and workspace session migration. Plain JavaScript, no model calls, no data upload.
   </footer>
 </main>
 
@@ -154,6 +164,17 @@
       "operatingSystem": "Windows, macOS, Linux",
       "description": "A collection of small DeepSeek Harness interface tweaks: an Open containing folder action on every plugin page, and a per-session unread mark that keeps a reminder in the session list until the session is opened again.",
       "url": "https://github.com/Kazuma-124/Personal_DSH_Plugins/tree/main/dsh-tweaks",
+      "author": { "@type": "Person", "name": "Kazuma-124" },
+      "license": "https://github.com/Kazuma-124/Personal_DSH_Plugins/blob/main/LICENSE"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "DSH Compaction prompts",
+      "alternateName": "压缩提示词",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Windows, macOS, Linux",
+      "description": "A global compaction-prompt picker in DeepSeek Harness settings: follow the installed official instruction, pin an archived official snapshot, or add custom prompts. Only the trailing summarization instruction is replaced; the plugin never calls a model and never uses the network.",
+      "url": "https://github.com/Kazuma-124/Personal_DSH_Plugins/tree/main/dsh-compaction-prompts",
       "author": { "@type": "Person", "name": "Kazuma-124" },
       "license": "https://github.com/Kazuma-124/Personal_DSH_Plugins/blob/main/LICENSE"
     },

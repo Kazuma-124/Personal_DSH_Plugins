@@ -2,16 +2,17 @@
 
 [Kazuma-124](https://github.com/Kazuma-124) 的 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)（`dsh`）插件仓库：每个插件都是可独立安装的**组合包**（bundle），仓库同时发布一个 **DSH 插件索引**，方便在应用的「发现」页里浏览、安装和更新。
 
-**English.** Four installable DeepSeek Harness bundles — token usage statistics, a per-conversation notebook, a collection of interface tweaks, and workspace session migration. All are plain JavaScript, have no third-party runtime dependencies, never call a model and never upload data; the migration bundle reads local session logs to copy a conversation into another workspace. Clone the repository and install a directory, or add the plugin index (`https://cdn.jsdelivr.net/gh/Kazuma-124/Personal_DSH_Plugins@main/docs/index.json`) in **Plugins → Discover**. See [Install](#install) and [what DSH actually validates](#what-dsh-actually-validates).
+**English.** Five installable DeepSeek Harness bundles — token usage statistics, a per-conversation notebook, a collection of interface tweaks, workspace session migration, and a global compaction-prompt picker with official snapshots and custom prompts. All are plain JavaScript, have no third-party runtime dependencies, never call a model and never upload data; the migration bundle reads local session logs to copy a conversation into another workspace, and the compaction-prompt bundle replaces only the trailing summarization instruction of the installed compaction request. Clone the repository and install a directory, or add the plugin index (`https://cdn.jsdelivr.net/gh/Kazuma-124/Personal_DSH_Plugins@main/docs/index.json`) in **Plugins → Discover**. See [Install](#install) and [what DSH actually validates](#what-dsh-actually-validates).
 
 | 插件 | 作用 | 出现位置 | 仓库目录 |
 |:--|:--|:--|:--|
 | [dsh-token-usage](dsh-token-usage/README.md) | 按对话与项目汇总 token 用量，带趋势图 | 左侧栏「Token 用量」 | [`dsh-token-usage/`](dsh-token-usage) |
 | [conversation-notebook](conversation-notebook/README.md) | 每个对话一份独立纯文本笔记，保存到本机磁盘 | 右侧栏入口页「对话记事本」 | [`conversation-notebook/`](conversation-notebook) |
 | [dsh-tweaks](dsh-tweaks/README.md) | DSH 界面小改动合集：插件详情页打开所在文件夹、会话行「标为未读」 | 插件详情页动作区、会话行菜单与行尾 | [`dsh-tweaks/`](dsh-tweaks) |
+| [dsh-compaction-prompts](dsh-compaction-prompts/README.md) | 全局选择一个压缩提示词；支持跟随官方、官方历史快照、自定义提示词的增改删与快照清理 | 设置 →「压缩提示词」页 + `compaction_prompt` 工具 | [`dsh-compaction-prompts/`](dsh-compaction-prompts) |
 | [workspace-session-migration](workspace-session-migration/README.md) | 把对话完整迁移到另一个工作区，原日志进备份或归档 | 左侧栏「工作区迁移」页 + 两个 Agent 工具 | [`workspace-session-migration/`](workspace-session-migration) |
 
-四个插件都只在本机工作：不调用模型、不上传任何数据、不创建定时任务；会话迁移需要复制会话，因此会读取本机会话日志。
+五个插件都只在本机工作：不调用模型、不上传任何数据、不创建定时任务；会话迁移需要复制会话，因此会读取本机会话日志；压缩提示词只替换压缩请求末尾的摘要指令，提示词正文保存在本机数据目录。
 
 ## 安装
 
@@ -41,6 +42,7 @@ git clone https://github.com/Kazuma-124/Personal_DSH_Plugins.git
 - `Personal_DSH_Plugins/dsh-token-usage`
 - `Personal_DSH_Plugins/conversation-notebook`
 - `Personal_DSH_Plugins/dsh-tweaks`
+- `Personal_DSH_Plugins/dsh-compaction-prompts`
 - `Personal_DSH_Plugins/workspace-session-migration`
 
 桌面版和 `dsh web` 都可以这样装。也可以走命令行（`<profile>` 换成实际的 profile 名）：
@@ -49,6 +51,7 @@ git clone https://github.com/Kazuma-124/Personal_DSH_Plugins.git
 dsh plugin --profile <profile> add ./Personal_DSH_Plugins/dsh-token-usage
 dsh plugin --profile <profile> add ./Personal_DSH_Plugins/conversation-notebook
 dsh plugin --profile <profile> add ./Personal_DSH_Plugins/dsh-tweaks
+dsh plugin --profile <profile> add ./Personal_DSH_Plugins/dsh-compaction-prompts
 dsh plugin --profile <profile> add ./Personal_DSH_Plugins/workspace-session-migration
 ```
 
@@ -56,12 +59,13 @@ dsh plugin --profile <profile> add ./Personal_DSH_Plugins/workspace-session-migr
 
 ### 方式三：从发布快照安装到本机 profile
 
-`scripts/deploy.mjs` 把插件复制到当前 profile 的默认插件目录 `<profile>/created-plugins`，复制目标目录名保持不变（`dsh-token-usage`、`e1727a2d-8dfb-4483-8fd4-2a5078b2229e`、`dsh-tweaks`、`workspace-session-migration`），因此改包名不影响本机已安装的条目。它安装的是仓库快照；本机日常修改应发生在复制后的目录，再提取回仓库并升版本。插件互相独立，只更新一个时用 `--only`，不会碰另一个插件的已部署副本：
+`scripts/deploy.mjs` 把插件复制到当前 profile 的默认插件目录 `<profile>/created-plugins`，复制目标目录名保持不变（`dsh-token-usage`、`e1727a2d-8dfb-4483-8fd4-2a5078b2229e`、`dsh-tweaks`、`dsh-compaction-prompts`、`workspace-session-migration`），因此改包名不影响本机已安装的条目。它安装的是仓库快照；本机日常修改应发生在复制后的目录，再提取回仓库并升版本。插件互相独立，只更新一个时用 `--only`，不会碰另一个插件的已部署副本：
 
 ```powershell
 node scripts/deploy.mjs --only dsh-token-usage            # 只更新 Token 用量
 node scripts/deploy.mjs --only conversation-notebook      # 只更新对话记事本
 node scripts/deploy.mjs --only dsh-tweaks              # 只更新界面微调
+node scripts/deploy.mjs --only dsh-compaction-prompts  # 只更新压缩提示词
 node scripts/deploy.mjs --only workspace-session-migration # 只更新会话迁移
 node scripts/deploy.mjs --list                            # 列出可用名字
 node scripts/deploy.mjs --all                             # 批量部署必须显式 --all
@@ -85,8 +89,8 @@ node scripts/deploy.mjs --all                             # 批量部署必须�
 
 | 字段 | 强制程度 | 不满足时会发生什么 | 本仓库做法 |
 |:--|:--|:--|:--|
-| `dsh.bundle.patch` | **硬性** | 包能装进去，但只作为普通依赖，**不会插入任何插件行** | 四个包都声明 |
-| `engines.dsh`（或 `@deepseek-ai/dsh*` peer） | **硬性** | 不匹配时安装被拒（需按 `name@version` 显式豁免）；已装的行在启动时被自动禁用并打警告 | 各包按实测声明：三个包为 `>=0.2.0-0 <0.3.0`，会话迁移为 `>=0.2.2-rc.5 <0.3.0` |
+| `dsh.bundle.patch` | **硬性** | 包能装进去，但只作为普通依赖，**不会插入任何插件行** | 五个包都声明 |
+| `engines.dsh`（或 `@deepseek-ai/dsh*` peer） | **硬性** | 不匹配时安装被拒（需按 `name@version` 显式豁免）；已装的行在启动时被自动禁用并打警告 | 各包按实测声明：三个包为 `>=0.2.0-0 <0.3.0`，会话迁移与压缩提示词为 `>=0.2.2-rc.5 <0.3.0` |
 | patch 里的 `name` 能被 profile 解析 | **硬性** | 该行加载失败 | patch 与包名一致 |
 | `meta.title` / `meta.description` | 软性 | 回退 `package.json` 的 `name` / `description`，卡片和详情页显示粗糙 | 中英 locale 都写了 |
 | `icon` | 软性 | 用面板默认占位图；超过 256 KiB 或格式不是 SVG/PNG/JPEG/WebP 会报诊断 | 各有原创 SVG |
@@ -103,6 +107,7 @@ node scripts/deploy.mjs --all                             # 批量部署必须�
 | dsh-token-usage | 1.0.2 | `>=0.2.0-0 <0.3.0` | DSH 0.2.2-rc.5（Desktop） |
 | conversation-notebook | 1.0.3 | `>=0.2.0-0 <0.3.0` | DSH 0.2.2-rc.5（Desktop） |
 | dsh-tweaks | 2.0.0 | `>=0.2.0-0 <0.3.0` | DSH 0.2.2-rc.5（Desktop） |
+| dsh-compaction-prompts | 2.2.0 | `>=0.2.2-rc.5 <0.3.0` | DSH 0.2.2-rc.5（Desktop） |
 | workspace-session-migration | 1.0.1 | `>=0.2.2-rc.5 <0.3.0` | DSH 0.2.2-rc.5（Desktop） |
 
 `-0` 让范围包含 0.2.x 的预发布版本。这个范围表示「面向 0.2 系列」，`<0.3.0` 用于挡住未验证的大版本：升级 DSH 到 0.3 之后需要先实测再放宽，否则用户会看到「不兼容」。0.2.0 的早期小版本没有逐一验证。各版本的具体变化见插件目录里的 `CHANGELOG.md`。
@@ -135,7 +140,8 @@ node scripts/version.mjs check          # 检查版本、变更记录与已发�
 ├── dsh-token-usage/           # 插件 A：host 路由 + 浏览器侧栏入口 + 单文件页面
 ├── conversation-notebook/     # 插件 B：Connection 路由 + 磁盘存储 + 右侧栏页签
 ├── dsh-tweaks/                # 插件 C：DSH 界面小改动合集（插件目录、会话未读标记）
-├── workspace-session-migration/ # 插件 D：工作区之间复制并移除会话（Host 工具）
+├── dsh-compaction-prompts/    # 插件 D：压缩提示词全局选择、官方快照与自定义提示词
+├── workspace-session-migration/ # 插件 E：工作区之间复制并移除会话（Host 工具）
 ├── scripts/
 │   ├── deploy.mjs             # 复制插件到当前 profile 的 created-plugins（--only / --all）
 │   ├── plugins.mjs            # 参与索引的插件目录与分类
@@ -157,10 +163,13 @@ cd conversation-notebook
 node build.mjs                                  # 改 src/ 后必须重建 dist/
 node --test tests/*.test.mjs
 node --test dsh-tweaks/tests/*.test.mjs # 界面微调
+node --test dsh-compaction-prompts/tests/*.test.mjs # 压缩提示词（需 DSH 运行环境变量）
 node --test workspace-session-migration/tests/*.test.mjs # 会话迁移
 ```
 
 `conversation-notebook` 的 `dist/` 是提交进仓库的构建产物：按目录安装和 git 安装都直接使用它，不依赖安装时的构建。
+
+`dsh-compaction-prompts` 的清单与客户端测试可用普通 Node 运行；后端集成测试（官方提示词捕获、Connection 路由、真实 HTTP）需要打包 DSH 的 Electron Node 运行环境，并设置 `ELECTRON_RUN_AS_NODE=1` 与 `DSH_INSTALL_DIR`。
 
 ## 索引与分发
 

@@ -9,6 +9,7 @@ export const PLUGINS = [
   { dir: 'dsh-token-usage', category: 'usage' },
   { dir: 'conversation-notebook', category: 'ui' },
   { dir: 'dsh-tweaks', category: 'ui' },
+  { dir: 'dsh-compaction-prompts', category: 'ui' },
   { dir: 'workspace-session-migration', category: 'workspace' },
 ];
 

@@ -204,8 +204,8 @@ async function main() {
     format: 1,
     title: { en: "Kazuma's DSH plugins", zh: 'Kazuma 的 DSH 插件' },
     description: {
-      en: 'Bundles for DeepSeek Harness: token usage statistics, a per-conversation notebook, plugin-manager actions and workspace session migration.',
-      zh: 'DeepSeek Harness 组合包：Token 用量统计、对话记事本、插件操作与会话迁移。',
+      en: 'Bundles for DeepSeek Harness: token usage statistics, a per-conversation notebook, interface tweaks, compaction prompts and workspace session migration.',
+      zh: 'DeepSeek Harness 组合包：Token 用量统计、对话记事本、界面微调、压缩提示词与会话迁移。',
     },
     metadata: INDEX_METADATA,
     plugins: built,

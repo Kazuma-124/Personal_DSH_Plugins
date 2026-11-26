@@ -16,6 +16,7 @@ const plugins = [
   { source: 'dsh-token-usage', target: 'dsh-token-usage' },
   { source: 'conversation-notebook', target: 'e1727a2d-8dfb-4483-8fd4-2a5078b2229e', build: 'build.mjs' },
   { source: 'dsh-tweaks', target: 'dsh-tweaks' },
+  { source: 'dsh-compaction-prompts', target: 'dsh-compaction-prompts' },
   { source: 'workspace-session-migration', target: 'workspace-session-migration' },
 ];
 const skip = new Set(['node_modules', 'verification', '.git']);

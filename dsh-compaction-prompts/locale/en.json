@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Compaction prompts",
+    "description": "Choose one compaction prompt for all sessions in Settings → Compaction prompts. Use a custom prompt, follow the installed DSH official version, or pin an official snapshot. Startup synchronizes official content and preserves new snapshots without changing your selection. Existing active/presets prompts are imported once."
+  }
+}

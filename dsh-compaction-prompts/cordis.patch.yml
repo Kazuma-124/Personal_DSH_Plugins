@@ -1,0 +1,5 @@
+# Host row for the file-backed compaction instruction. The plugin replaces the
+# summary hook on the shared backend class, so no agent preset is edited.
+- insert:
+    - id: '@kazuma-124/dsh-compaction-prompts:prompts'
+      name: '@kazuma-124/dsh-compaction-prompts'

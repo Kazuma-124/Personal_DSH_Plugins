@@ -1,0 +1,27 @@
+{
+  "name": "@kazuma-124/dsh-compaction-prompts",
+  "version": "2.2.0",
+  "type": "module",
+  "description": "Choose a global compaction prompt in DSH settings, with automatic snapshots of the installed official instruction.",
+  "exports": {
+    ".": "./index.js",
+    "./prompt-store": "./prompt-store.js",
+    "./client": "./client.js",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg",
+    "./package.json": "./package.json"
+  },
+  "files": ["index.js", "prompt-store.js", "catalog-store.js", "official-prompt.js", "prompt-interface.js", "client.js", "locale/*.json", "icon.svg", "cordis.patch.yml", "README.md", "CHANGELOG.md"],
+  "engines": { "dsh": ">=0.2.2-rc.5 <0.3.0", "node": ">=24" },
+  "author": "Kazuma-124",
+  "license": "MIT",
+  "repository": { "type": "git", "url": "git+https://github.com/Kazuma-124/Personal_DSH_Plugins.git", "directory": "dsh-compaction-prompts" },
+  "homepage": "https://github.com/Kazuma-124/Personal_DSH_Plugins/tree/main/dsh-compaction-prompts#readme",
+  "bugs": { "url": "https://github.com/Kazuma-124/Personal_DSH_Plugins/issues" },
+  "keywords": ["dsh", "dsh-plugin", "deepseek-harness", "compaction", "summarization", "prompt", "context"],
+  "dsh": {
+    "bundle": { "patch": "./cordis.patch.yml", "platforms": ["win32", "linux", "darwin"] },
+    "client": { "platform": "web", "immediately": true, "inject": ["@deepseek-ai/dsh-client-ui-settings", "@deepseek-ai/dsh-client-locale"] }
+  },
+  "scripts": { "test": "node --test tests/*.test.mjs" }
+}
